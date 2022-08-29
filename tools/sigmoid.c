@@ -20,7 +20,7 @@ Written by: Manuel A. Buen-Abad, 2022.
 double tanh_sigmoid( double Delta,
                      double alpha0,
                      double alpha)
-/* Tanh sigmoid. It fits rather well the step-like evolution of x(a)/a for STEPPAC. It is less good than the asymmetric sigmoid, but it has less spread in the bestfit parameters (Delta, alpha0) as a function of rg. */
+/* Tanh sigmoid. It fits rather well the step-like evolution of x(a)/a for SPARTACOUS. It is less good than the asymmetric sigmoid, but it has less spread in the bestfit parameters (Delta, alpha0) as a function of rg. */
 {
 
   double ans;
@@ -53,7 +53,7 @@ double asym_sigmoid( double Delta,
                      double powL,
                      double powR,
                      double alpha)
-/* A particularly useful, asymmetric sigmoid. It fits rather well the step-like evolution of x(a)/a for STEPPAC. It is better than the Tanh sigmoid, but it has a larger spread in the bestfit parameters (Delta, alpha0, powL, powR) as a function of rg. */
+/* A particularly useful, asymmetric sigmoid. It fits rather well the step-like evolution of x(a)/a for SPARTACOUS. It is better than the Tanh sigmoid, but it has a larger spread in the bestfit parameters (Delta, alpha0, powL, powR) as a function of rg. */
 {
 
   double left, right, ans;
@@ -94,7 +94,7 @@ double d_asym_sigmoid( double Delta,
 double x_over_alpha( double rg,
                      double sigm)
 
-/* The step-like evolution of x(a)/a for STEPPAC. */
+/* The step-like evolution of x(a)/a for SPARTACOUS. */
 
 {
 

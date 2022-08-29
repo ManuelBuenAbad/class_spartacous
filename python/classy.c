@@ -27907,7 +27907,7 @@ static PyObject *__pyx_pf_6classy_5Class_134Omega0_m(struct __pyx_obj_6classy_Cl
 
 /* "classy.pyx":1930
  *     #spartacous
- *     # defining all useful STEPPAC functions for easy Python access
+ *     # defining all useful SPARTACOUS functions for easy Python access
  *     def Omega0_dm_tot(self):             # <<<<<<<<<<<<<<
  *         """
  *         The total DM abundance (vanilla CDM + PAcDM).
@@ -27949,7 +27949,7 @@ static PyObject *__pyx_pf_6classy_5Class_136Omega0_dm_tot(struct __pyx_obj_6clas
 
   /* "classy.pyx":1930
  *     #spartacous
- *     # defining all useful STEPPAC functions for easy Python access
+ *     # defining all useful SPARTACOUS functions for easy Python access
  *     def Omega0_dm_tot(self):             # <<<<<<<<<<<<<<
  *         """
  *         The total DM abundance (vanilla CDM + PAcDM).

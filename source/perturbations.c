@@ -478,7 +478,7 @@ int perturbations_output_data(
           class_store_double(dataptr,tk[ppt->index_tp_delta_dcdm],ppt->has_source_delta_dcdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_dr],ppt->has_source_delta_dr,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_scf],ppt->has_source_delta_scf,storeidx);
-          // spartacous: storing delta results
+          //spartacous: storing delta results
           class_store_double(dataptr,tk[ppt->index_tp_delta_pacdm],ppt->has_source_delta_pacdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_pacdr],ppt->has_source_delta_pacdr,storeidx);
           //spartacous

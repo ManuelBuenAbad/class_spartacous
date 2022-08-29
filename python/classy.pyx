@@ -1926,7 +1926,7 @@ cdef class Class:
         return self.ba.Omega0_m
 
     #spartacous
-    # defining all useful STEPPAC functions for easy Python access
+    # defining all useful SPARTACOUS functions for easy Python access
     def Omega0_dm_tot(self):
         """
         The total DM abundance (vanilla CDM + PAcDM).

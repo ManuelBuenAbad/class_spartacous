@@ -3556,12 +3556,12 @@ int input_read_parameters_species(struct file_content * pfc,
   // verbosity
   if ((input_verbose > 1) && ((pba->Omega0_pacdm != 0.) || (pba->Omega0_pacdr != 0.))) {
     printf("****************************************************************************\n");
-    printf("\tThe STEPPAC Model (beta version)\n");
+    printf("\tThe SPARTACOUS Model (beta version)\n");
     printf("****************************************************************************\n");
     printf("\tA code for Stepped PAcDM.\n");
     printf("\tBETA VERSION. TODO:\n\t1. Check & Improve: input.c, background.c, & perturbations.c\n\t2. Write Jupyter notebooks!\n");
     printf("............................................................................\n");
-    printf("\tSTEPPAC parameters passed:\n\n");
+    printf("\tSPARTACOUS parameters passed:\n\n");
     printf("\t -> Omega0_pacdm = %.4e\n", pba->Omega0_pacdm);
     printf("\t    .... f_pacdm = %g\n", pba->Omega0_pacdm/pba->Omega0_dm_tot);
     printf("\t    .... Omega0_cdm = %.4e\n", pba->Omega0_cdm);
