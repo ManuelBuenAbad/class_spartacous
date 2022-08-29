@@ -81,9 +81,14 @@ cdef extern from "class.h":
         int index_bg_nsub_pacdr
         int index_bg_N_pacdr
         int index_bg_w_pacdr
-        int index_bg_dw_pacdr
         int index_bg_cs2_pacdr
         int index_bg_Gamma_pacdr
+        int index_bg_dx_pacdr
+        int index_bg_ddx_pacdr
+        int index_bg_dw_pacdr
+        int index_bg_ddw_pacdr
+        int index_bg_dcs2_pacdr
+        int index_bg_dGamma_pacdr
         short has_pacdm
         short has_pacdr
         #spartacous
