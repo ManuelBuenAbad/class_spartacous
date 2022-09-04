@@ -3541,6 +3541,33 @@ int input_read_parameters_species(struct file_content * pfc,
     pba->alpha_pac = sqrt( pow( ct, 2./3. ) * exp(Wm) );
   }
 
+  // storing the ratio Gamma_pacdr/H in the UV
+  pba->GH_ratio = pba->Gamma_pacdr/(pba->H0*sqrt(Omega_rad+pba->N_UV*Omega_1nu));
+
+  //spartacous_approx
+  // whether we will use at all the dark tight-coupling approximation: need the flag 'yes' AND need the UV Gamma/H ratio to be sufficiently large. Otherwise even the demand to use it gets overruled and we will sove the perturbation equations exactly, without the approximation.
+  class_call(parser_read_string(pfc,"use DTCA",&string1,&flag5,errmsg),
+             errmsg,
+             errmsg);
+  if (flag5 == _TRUE_){
+    if ((string_begins_with(string1,'y') || string_begins_with(string1,'Y')) && (pba->GH_ratio > 1./ppr->dark_tight_coupling_trigger_dtau_c_over_tau_h) && (pba->Omega0_pacdm != 0.) && (pba->Omega0_pacdr != 0.))
+      ppt->use_DTCA = _TRUE_;
+    else
+      ppt->use_DTCA = _FALSE_;
+  }
+
+  // whether we will use at all the dark radiation streaming approximation: need the flag 'yes'.
+  class_call(parser_read_string(pfc,"use DRSA",&string1,&flag5,errmsg),
+             errmsg,
+             errmsg);
+  if (flag5 == _TRUE_){
+    if ((string_begins_with(string1,'y') || string_begins_with(string1,'Y')) && (pba->Omega0_pacdr != 0.))
+      ppr->dark_radiation_streaming_approximation = drsa_MD;
+    else
+      ppr->dark_radiation_streaming_approximation = drsa_none;
+  }
+  //spartacous_approx
+
   // TODO: REVISIT THIS, make more precise!
   // a very crude estimate of the ratio xfo === m_pacdr/T_pacdr at the time of freeze-out, ignoring differences in visible and dark temperatures, and taking T_pacdr ~ m_pacdr everywhere except the Boltzmann suppression
 
@@ -3560,8 +3587,16 @@ int input_read_parameters_species(struct file_content * pfc,
     printf("****************************************************************************\n");
     printf("\tA code for Stepped Partially Acoustic Dark Matter.\n");
     printf("\tBETA VERSION. TODO:\n\t1. Check & Improve: input.c, background.c, & perturbations.c\n\t2. Write Jupyter notebooks!\n");
-    printf("............................................................................\n");
-    printf("\tSPartAcous parameters passed:\n\n");
+    printf("----------------------------------------------------------------------------\n");
+    if (ppt->use_DTCA == _TRUE_)
+      printf("\tDark tight coupling approximation (DTCA): ON.\n");
+    else
+      printf("\tDark tight coupling approximation (DTCA): OFF.\n");
+    if (ppr->dark_radiation_streaming_approximation == drsa_MD)
+      printf("\tDark radiation streaming approximation (DRSA): ON.\n\n");
+    else
+      printf("\tDark radiation streaming approximation (DRSA): OFF.\n\n");
+    printf("........................SPartAcous parameters passed........................\n\n");
     printf("\t -> Omega0_pacdm = %.4e\n", pba->Omega0_pacdm);
     printf("\t    .... f_pacdm = %g\n", pba->Omega0_pacdm/pba->Omega0_dm_tot);
     printf("\t    .... Omega0_cdm = %.4e\n", pba->Omega0_cdm);
@@ -3589,7 +3624,8 @@ int input_read_parameters_species(struct file_content * pfc,
     printf("\t -> Gamma_pacdr = %.4e Mpc^-1\n", pba->Gamma_pacdr);
     printf("\t                = %.4e GeV\n", pba->Gamma_pacdr/(_GeV_times_m_*_Mpc_over_m_));
     printf("\t                = %.4e x H0\n", pba->Gamma_pacdr/pba->H0);
-    printf("............................................................................\n\n");
+    printf("\t    .... Gamma_pacdr/H @ UV = %.4e\n", pba->GH_ratio);
+    printf("----------------------------------------------------------------------------\n\n");
   }
   //spartacous
 
@@ -6277,6 +6313,7 @@ int input_default_params(struct background *pba,
   /** 7.2.5.b) PAcDR */
   pba->dr_sub_stat = fermion;
   pba->ignore_NUV_BBN = _TRUE_;
+  ppt->use_DTCA = _TRUE_;
   pba->Omega0_pacdr = 0.;
   pba->N_UV = 0.;
   pba->N_IR = 0.;
@@ -6293,6 +6330,7 @@ int input_default_params(struct background *pba,
   /** 7.2.5.c) PAc Interactions */
   pba->alpha_pac = 0.;
   pba->Gamma_pacdr = 0.;// [Mpc^-1] N.B.: 1.-2 is 5000 x larger than H_rad(z=0) ~ 2.e-6 Mpc^-1
+  pba->GH_ratio = 0.;// UV Gamma/H ratio
   //spartacous
 
   /** 9) Dark energy contributions */

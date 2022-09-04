@@ -113,6 +113,7 @@ struct background
   double xfo_pacdr;// m_pacdr/T_pacdr at the time of freeze-out
   double alpha_pac;// interaction strength  for PAcDM and PAcDR scattering (g^2/(4*pi))
   double Gamma_pacdr;// [Mpc^-1] momentum-transfer rate from PAcDR to PAcDM
+  double GH_ratio;// ratio of Gamma_pacdr/H in the UV
   short particle_physics;// whether we know the particle physics (i.e. the specific model) at the heart of the SPartAcous
   short ignore_NUV_BBN;// whether we ignore the UV PAcDR at BBN to compute YHe
   //spartacous

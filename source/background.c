@@ -590,10 +590,8 @@ int background_functions(
     rho_m += pvecback[pba->index_bg_rho_pacdm];
   }
   /* PAcDR */
-  /* TODO:
-
+  /* TODO: revisit
     1. check and improve everything
-
     2. x_fo is currently computed in input.c with a crude estimate
   */
 
@@ -784,21 +782,12 @@ int background_functions(
     pvecback[pba->index_bg_cs2_pacdr] = cs2_pacdr;
     pvecback[pba->index_bg_Gamma_pacdr] = Gamma;
 
-    pvecback[pba->index_bg_dx_pacdr] = dxdlna;
-    pvecback[pba->index_bg_ddx_pacdr] = d2xdlna2;
-    pvecback[pba->index_bg_dw_pacdr] = dw*dxdlna;
-    pvecback[pba->index_bg_ddw_pacdr] = dw*d2xdlna2 + pow(dxdlna, 2.)*ddw;
-    pvecback[pba->index_bg_dcs2_pacdr] = dcs2*dxdlna;
-    // pvecback[pba->index_bg_dreg_pacdr] = ;
-    pvecback[pba->index_bg_dGamma_pacdr] = dGamma*dxdlna;
-
-    // int index_bg_dx_pacdr;      // dx/dlna
-    // int index_bg_ddx_pacdr;     // d/dlna (dx/dlna)
-    // int index_bg_dw_pacdr;      // dln(1+w)/dlna
-    // int index_bg_ddw_pacdr;     // d/dlna (dln(1+w)/dlna)
-    // int index_bg_dcs2_pacdr;    // dln(c_s^2)/dlna
-    // int index_bg_dreg_pacdr;    // dln(regulator)/dlna
-    // int index_bg_dGamma_pacdr;  // dln(Gamma)/dlna
+    pvecback[pba->index_bg_dx_pacdr] = dxdlna; // dx/dlna
+    pvecback[pba->index_bg_ddx_pacdr] = d2xdlna2; // d/dlna (dx/dlna)
+    pvecback[pba->index_bg_dw_pacdr] = dw*dxdlna; // dln(1+w)/dlna
+    pvecback[pba->index_bg_ddw_pacdr] = dw*d2xdlna2 + pow(dxdlna, 2.)*ddw; // d/dlna (dln(1+w)/dlna)
+    pvecback[pba->index_bg_dcs2_pacdr] = dcs2*dxdlna; // dln(c_s^2)/dlna
+    pvecback[pba->index_bg_dGamma_pacdr] = dGamma*dxdlna; // dln(Gamma)/dlna
 
     rho_tot += pvecback[pba->index_bg_rho_pacdr];
     p_tot += pvecback[pba->index_bg_p_pacdr];
@@ -3156,7 +3145,7 @@ int background_output_budget(
       class_print_species("Interacting Dark Radiation",idr);
       budget_radiation+=pba->Omega0_idr;
     }
-    //spartacous: printing budget radiation fro PAcDR
+    //spartacous: printing budget radiation from PAcDR
     if (pba->has_pacdr == _TRUE_) {
       class_print_species("Partially Acoustic Dark Radiation",pacdr);
       budget_radiation+=pba->Omega0_pacdr;

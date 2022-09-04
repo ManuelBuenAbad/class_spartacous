@@ -149,6 +149,7 @@ cdef extern from "class.h":
         double xfo_pacdr
         double alpha_pac
         double Gamma_pacdr
+        double GH_ratio
         short particle_physics
         #spartacous
 

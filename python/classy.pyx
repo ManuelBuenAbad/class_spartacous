@@ -2031,7 +2031,7 @@ cdef class Class:
 
     def Gamma_pacdr(self):
         """
-        The momentum-transfer rate from PAcDR to PAcDM [Mpc^-1].
+        The momentum-transfer rate parameter from PAcDR to PAcDM [Mpc^-1]. This is *NOT* the actual momentum-transfer rate today, but what it would be had the DR step not taken place.
         """
         return self.ba.Gamma_pacdr
 

@@ -15,7 +15,12 @@
  * flags for various approximation schemes
  * (tca = tight-coupling approximation,
  *  rsa = radiation streaming approximation,
- *  ufa = massless neutrinos / ultra-relativistic relics fluid approximation)
+ *  ufa = massless neutrinos / ultra-relativistic relics fluid approximation
+//spartacous_approx
+//TODO: generalize so that starting with TCA for SPartAcous only applies if Gamma >> H; also compute DRSA formulas exactly, when w != 1/3.
+ *  dtca = dark tight-coupling approximation
+ *  drsa = dark radiation streaming approximation)
+//spartacous_approx
  *
  * CAUTION: must be listed below in chronological order, and cannot be
  * reversible. When integrating equations for a given mode, it is only
@@ -30,6 +35,10 @@ enum tca_idm_dr_flags {tca_idm_dr_on, tca_idm_dr_off};
 enum rsa_idr_flags {rsa_idr_off, rsa_idr_on};
 enum ufa_flags {ufa_off, ufa_on};
 enum ncdmfa_flags {ncdmfa_off, ncdmfa_on};
+//spartacous_approx
+enum dtca_flag {dtca_on, dtca_off};
+enum drsa_flags {drsa_off, drsa_on};
+//spartacous_approx
 
 //@}
 
@@ -46,6 +55,10 @@ enum rsa_idr_method {rsa_idr_none,rsa_idr_MD};  /* for the idm-idr case */
 enum ufa_method {ufa_mb,ufa_hu,ufa_CLASS,ufa_none};
 enum ncdmfa_method {ncdmfa_mb,ncdmfa_hu,ncdmfa_CLASS,ncdmfa_none};
 enum tensor_methods {tm_photons_only,tm_massless_approximation,tm_exact};
+//spartacous_approx
+enum dtca_method {first_order};
+enum drsa_method {drsa_MD,drsa_none};
+//spartacous_approx
 
 //@}
 
@@ -177,6 +190,9 @@ struct perturbations
 
   int idr_nature; /**< Nature of the interacting dark radiation (free streaming or fluid) */
 
+  //spartacous_approx
+  short use_DTCA; /** < whether we will use the DTCA when appropriate */
+  //spartacous_approx
   //@}
 
   /** @name - useful flags inferred from the ones above */
@@ -604,6 +620,11 @@ struct perturbations_workspace
   double rsa_theta_ur; /**< photon velocity in radiation streaming approximation */
   double rsa_delta_idr; /**< interacting dark radiation density in dark radiation streaming approximation */
   double rsa_theta_idr; /**< interacting dark radiation velocity in dark radiation streaming approximation */
+  //spartacous_approx
+  double dtca_slip;         /**< PAcDR-PAcDM slip in dark tight-coupling approximation */
+  double drsa_delta_pacdr;  /**< PAcDR density in dark radiation streaming approximation */
+  double drsa_theta_pacdr;  /**< PAcDR velocity in dark radiation streaming approximation */
+  //spartacous_approx
 
   double theta_idm; /**< interacting dark matter velocity */
   double theta_idm_prime; /**< derivative of interacting dark matter velocity in regard to conformal time */
@@ -650,6 +671,10 @@ struct perturbations_workspace
   int index_ap_rsa_idr; /**< index for dark radiation streaming approximation */
   int index_ap_ufa; /**< index for ur fluid approximation */
   int index_ap_ncdmfa; /**< index for ncdm fluid approximation */
+  //spartacous_approx
+  int index_ap_dtca;    /**< index for dark PAcDR-PAcDM tight-coupling approximation */
+  int index_ap_drsa;    /**< index for dark PAcDR radiation-streaming approximation */
+  //spartacous_approx
   int ap_size;      /**< number of relevant approximations for a given mode */
 
   int * approx;     /**< array of approximation flags holding at a given time: approx[index_ap] */
@@ -989,6 +1014,26 @@ extern "C" {
                                             struct perturbations_workspace * ppw,
                                             ErrorMsg error_message
                                             );
+
+//spartacous_approx
+  int perturbations_dtca_slip(
+                              double * y,
+                              void * parameters_and_workspace,
+                              ErrorMsg error_message
+                              );
+
+  int perturbations_drsa_delta_and_theta(
+                                         struct precision * ppr,
+                                         struct background * pba,
+                                         struct perturbations * ppt,
+                                         double k,
+                                         double * y,
+                                         double a_prime_over_a,
+                                         struct perturbations_workspace * ppw,
+                                         ErrorMsg error_message
+                                         );
+
+//spartacous_approx
 
 #ifdef __cplusplus
 }
