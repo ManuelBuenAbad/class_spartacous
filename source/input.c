@@ -2309,8 +2309,8 @@ int input_read_parameters_species(struct file_content * pfc,
   int flag1, flag2, flag3;
   double param1, param2, param3;
   //spartacous: new variables
-  int flag4, flag5, flag6, flag7, flag8, flag9, flag10, flag11, flag12, flag13;
-  double param4, param5, param6, param7, param8, param9, param10, param11, param12;
+  int flag4, flag5, flag6, flag7, flag8, flag9, flag10, flag11, flag12, flag13, flag14;
+  double param4, param5, param6, param7, param8, param9, param10, param11, param12, param14;
   double Omega_rad,Omega_1nu,T_nu,Omega_mat,T_eq,Hub_fo,reg;
   short particle_physics = _FALSE_;
   //spartacous
@@ -3268,6 +3268,9 @@ int input_read_parameters_species(struct file_content * pfc,
   class_call(parser_read_string(pfc,"ignore N_UV at BBN",&string1,&flag13,errmsg),
              errmsg,
              errmsg);
+  class_call(parser_read_double(pfc,"logz_tr",&param14,&flag14,errmsg),
+             errmsg,
+             errmsg);
   if (flag13 == _TRUE_){
     if (string_begins_with(string1,'y') || string_begins_with(string1,'Y'))
       pba->ignore_NUV_BBN = _TRUE_;
@@ -3367,6 +3370,10 @@ int input_read_parameters_species(struct file_content * pfc,
     pba->a_tr = param12;
     class_test(pba->a_tr < 0.,errmsg, "You cannot set the transition scale factor a_tr to negative values.");
   }
+  if (flag14 == _TRUE_) {
+    pba->a_tr =1./(pow(10., param14) + 1.);
+    class_test(pba->a_tr < 0.,errmsg, "You cannot set the transition scale factor a_tr to negative values.");
+  }
 
   if (flag5 == _TRUE_ || flag8 == _TRUE_)
     particle_physics = _TRUE_;// will be able to pinpoint particle physics parameters {T_pacdr, xi_pacdr, g_IR}
@@ -3380,6 +3387,13 @@ int input_read_parameters_species(struct file_content * pfc,
   class_test((flag5 == _TRUE_) && (flag11 == _TRUE_) && (flag12 == _TRUE_),// if a_tr was passed AND T_pacdr and m_pacdr were also passed: CONFLICT!
              errmsg,
              "You cannot pass a_tr AND BOTH {T_pacdr, m_pacdm}. The former can be derived from the latter two.");
+
+  class_test((flag5 == _TRUE_) && (flag11 == _TRUE_) && (flag14 == _TRUE_),// if logz_tr was passed AND T_pacdr and m_pacdr were also passed: CONFLICT!
+             errmsg,
+             "You cannot pass logz_tr AND BOTH {T_pacdr, m_pacdm}. The former can be derived from the latter two.");
+  class_test((flag12 == _TRUE_) && (flag14 == _TRUE_),// if logz_tr was passed AND T_pacdr and m_pacdr were also passed: CONFLICT!
+             errmsg,
+             "You cannot pass a_tr AND logz_tr. The former can be derived from the latter.");
 
   //Computation of IR parameters
   if ((flag5 == _TRUE_) && (flag8 == _TRUE_)) {// if g_IR & T_pacdr, get N_IR & Omega0_pacdr
@@ -3429,7 +3443,11 @@ int input_read_parameters_species(struct file_content * pfc,
     pba->a_tr = (pba->T_pacdr*_k_B_/_eV_ * 1.e-9)/pba->m_pacdr;
   else if ((particle_physics == _TRUE_) && (flag12 == _TRUE_))// get m_pacdr from {T_pacdr, a_tr}
     pba->m_pacdr = (pba->T_pacdr*_k_B_/_eV_ * 1.e-9)/pba->a_tr;
+  else if ((particle_physics == _TRUE_) && (flag14 == _TRUE_))// get m_pacdr from {T_pacdr, a_tr}, when z_tr was passed instead (flag14)
+    pba->m_pacdr = (pba->T_pacdr*_k_B_/_eV_ * 1.e-9)/pba->a_tr;
   else if ((flag11 == _TRUE_) && (flag12 == _TRUE_))// get T_pacdr from {m_pacdr, a_tr}
+    pba->T_pacdr = pba->a_tr*(pba->m_pacdr * 1.e9 * _eV_/_k_B_);
+  else if ((flag11 == _TRUE_) && (flag14 == _TRUE_))// get T_pacdr from {m_pacdr, a_tr}
     pba->T_pacdr = pba->a_tr*(pba->m_pacdr * 1.e9 * _eV_/_k_B_);
   //Done with transition
 
