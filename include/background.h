@@ -227,8 +227,8 @@ struct background
   int index_bg_dw_pacdr;      // dln(1+w)/dlna
   int index_bg_ddw_pacdr;     // d/dlna (dln(1+w)/dlna)
   int index_bg_dcs2_pacdr;    // dln(c_s^2)/dlna
-  int index_bg_dreg_pacdr;    // dln(regulator)/dlna
   int index_bg_dGamma_pacdr;  // dln(Gamma)/dlna
+  // int index_bg_varpi_pacdr;    // dln(regulator)/dlna
 
   //spartacous
 

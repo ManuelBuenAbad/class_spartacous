@@ -268,7 +268,7 @@ class_precision_parameter(start_small_k_at_tau_c_over_tau_h,double,0.0015) /**< 
 class_precision_parameter(start_large_k_at_tau_h_over_tau_k,double,0.07)  /**< largest wavelengths start being sampled when mode is sufficiently outside Hubble scale. This is quantified in terms of the ratio of hubble time scale to wavenumber time scale, \f$ \tau_h/\tau_k \f$ which is roughly equal to (k*tau). Start when this ratio equals start_large_k_at_tau_k_over_tau_h. Decrease this value to start integrating the wavenumbers earlier in time. */
 
 //spartacous_approx
-class_precision_parameter(start_at_a_over_a_tr,double,0.01)  /**< all wavelengths start being sampled when PAcDR is sufficiently radiation-like (i.e. sufficiently before the step transition time). This is quantified in terms of the ratio of the scale factor hubble the transition scale factor, \f$ a/a_tr \f$. Start when this ratio equals start_at_a_over_a_tr. Decrease this value to start integrating the wavenumbers earlier in time. */
+class_precision_parameter(start_at_a_over_a_tr,double,0.005)  /**< all wavelengths start being sampled when PAcDR is sufficiently radiation-like (i.e. sufficiently before the step transition time). This is quantified in terms of the ratio of the scale factor hubble the transition scale factor, \f$ a/a_tr \f$. Start when this ratio equals start_at_a_over_a_tr. Decrease this value to start integrating the wavenumbers earlier in time. */
 //spartacous_approx
 
 /**
@@ -311,8 +311,8 @@ class_precision_parameter(idm_dr_tight_coupling_trigger_tau_c_over_tau_h,double,
 //spartacous_approx
 class_precision_parameter(dark_tight_coupling_approximation,int,(int)first_order) /**< method for SPartAcous dark tight-coupling approximation */
 
-class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_k,double,0.01)  /**< when to switch off the SPartAcous dark-tight-coupling approximation, first condition (see normal tca for full definition) */
-class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_h,double,0.015) /**< when to switch off the SPartAcous dark-tight-coupling approximation, second condition (see normal tca for full definition) */
+class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_k,double,0.003)  /**< when to switch off the SPartAcous dark-tight-coupling approximation, first condition (see normal tca for full definition) */
+class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_h,double,0.0035) /**< when to switch off the SPartAcous dark-tight-coupling approximation, second condition (see normal tca for full definition) */
 //spartacous_approx
 
 class_precision_parameter(l_max_g,int,12)     /**< number of momenta in Boltzmann hierarchy for photon temperature (scalar), at least 4 */
@@ -391,11 +391,11 @@ class_precision_parameter(idr_streaming_trigger_tau_c_over_tau,double,10.0) /**<
  /* second condition: z/z_eq < dark_radiation_streaming_trigger_z_over_zeq */
  // class_precision_parameter(dark_radiation_streaming_trigger_z_over_zeq,double,0.05)
  /* second condition: tau/tau_eq > dark_radiation_streaming_trigger_tau_over_tau_eq */
- class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_eq,double,5.0)
+ class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_eq,double,6.0)
  /* third condition: z/z_tr < dark_radiation_streaming_trigger_z_over_ztr */
  // class_precision_parameter(dark_radiation_streaming_trigger_z_over_ztr,double,0.02)
  /* third condition: tau/tau_trend > dark_radiation_streaming_trigger_tau_over_tau_trend */
- class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_trend,double,4.0)
+ class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_trend,double,5.0)
 //spartacous_approx
 
 class_precision_parameter(ur_fluid_approximation,int,ufa_CLASS) /**< method for ultra relativistic fluid approximation */

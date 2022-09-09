@@ -1,5 +1,13 @@
 /** @file perturbations.c Documented perturbation module
  *
+ * MANUEL: TODO:
+      1. re-do initial conditions for _pacdr/_pacdm (re-check Mathematica .nb)
+      2. revisit the eta/_ur initial conditions (does Mathematica .nb gives something different?),
+      3. use delta_p instead of cs2*delta for pacdr? (27.a & 27.c in Ma & Bertsch.; seems red herring)
+      4. revisit DRSA: do I need to change them because of the step? (since DRSA turns on after step, seems red herring)
+      5. check varpi? (can't see why it would be a problem)
+      6. DTCA: turn off sufficiently before x_fo? (but why no problem if DTCA=off? seems red herring)
+
  * Julien Lesgourgues, 23.09.2010
  *
  * Deals with the perturbation evolution.
@@ -2759,7 +2767,7 @@ int perturbations_get_k_list(
      fclose(out);
   */
 
-  /** - finally, find the global k_min and k_max for the ensemble of all modes 9scalars, vectors, tensors) */
+  /** - finally, find the global k_min and k_max for the ensemble of all modes (scalars, vectors, tensors) */
 
   ppt->k_min = _HUGE_;
   ppt->k_max = 0.;
@@ -5399,132 +5407,129 @@ int perturbations_vector_init(
       //spartacous_approx
       if ((pba->has_pacdm) || (pba->has_pacdr)) {
 
-        if (ppt->use_DTCA == _TRUE_) {
+        /* Case of switching off interacting dark PAcDR-PAcDM tight coupling approximation */
 
-          /* Case of switching off interacting dark PAcDR-PAcDM tight coupling approximation */
+        if ((pa_old[ppw->index_ap_dtca] == (int)dtca_on) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
 
-          if ((pa_old[ppw->index_ap_dtca] == (int)dtca_on) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
-
-            if (ppt->perturbations_verbose>2)
-              fprintf(stdout,"Mode k=%e: switch off dark PAcDR-PAcDM tight coupling approximation at tau=%e\n",k,tau);
+          if (ppt->perturbations_verbose>2)
+            fprintf(stdout,"Mode k=%e: switch off dark PAcDR-PAcDM tight coupling approximation at tau=%e\n",k,tau);
 
 
-            //spartacous
-            ppv->y[ppv->index_pt_delta_pacdr] =
-              ppw->pv->y[ppw->pv->index_pt_delta_pacdr];
+          //spartacous
+          ppv->y[ppv->index_pt_delta_pacdr] =
+            ppw->pv->y[ppw->pv->index_pt_delta_pacdr];
 
-            ppv->y[ppv->index_pt_theta_pacdr] =
-              ppw->pv->y[ppw->pv->index_pt_theta_pacdr];
-            //spartacous
+          ppv->y[ppv->index_pt_theta_pacdr] =
+            ppw->pv->y[ppw->pv->index_pt_theta_pacdr];
+          //spartacous
 
+
+          if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
+
+            ppv->y[ppv->index_pt_delta_g] =
+              ppw->pv->y[ppw->pv->index_pt_delta_g];
+
+            ppv->y[ppv->index_pt_theta_g] =
+              ppw->pv->y[ppw->pv->index_pt_theta_g];
+          }
+
+          if ((ppw->approx[ppw->index_ap_tca] == (int)tca_off) && (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off)) {
+
+            ppv->y[ppv->index_pt_shear_g] =
+              ppw->pv->y[ppw->pv->index_pt_shear_g];
+
+            ppv->y[ppv->index_pt_l3_g] =
+              ppw->pv->y[ppw->pv->index_pt_l3_g];
+
+            for (l = 4; l <= ppw->pv->l_max_g; l++) {
+
+              ppv->y[ppv->index_pt_delta_g+l] =
+                ppw->pv->y[ppw->pv->index_pt_delta_g+l];
+            }
+
+            ppv->y[ppv->index_pt_pol0_g] =
+              ppw->pv->y[ppw->pv->index_pt_pol0_g];
+
+            ppv->y[ppv->index_pt_pol1_g] =
+              ppw->pv->y[ppw->pv->index_pt_pol1_g];
+
+            ppv->y[ppv->index_pt_pol2_g] =
+              ppw->pv->y[ppw->pv->index_pt_pol2_g];
+
+            ppv->y[ppv->index_pt_pol3_g] =
+              ppw->pv->y[ppw->pv->index_pt_pol3_g];
+
+            for (l = 4; l <= ppw->pv->l_max_pol_g; l++) {
+
+              ppv->y[ppv->index_pt_pol0_g+l] =
+                ppw->pv->y[ppw->pv->index_pt_pol0_g+l];
+            }
+          }
+
+          if (pba->has_ur == _TRUE_) {
 
             if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
 
-              ppv->y[ppv->index_pt_delta_g] =
-                ppw->pv->y[ppw->pv->index_pt_delta_g];
 
-              ppv->y[ppv->index_pt_theta_g] =
-                ppw->pv->y[ppw->pv->index_pt_theta_g];
-            }
+              ppv->y[ppv->index_pt_delta_ur] =
+                ppw->pv->y[ppw->pv->index_pt_delta_ur];
 
-            if ((ppw->approx[ppw->index_ap_tca] == (int)tca_off) && (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off)) {
+              ppv->y[ppv->index_pt_theta_ur] =
+                ppw->pv->y[ppw->pv->index_pt_theta_ur];
 
-              ppv->y[ppv->index_pt_shear_g] =
-                ppw->pv->y[ppw->pv->index_pt_shear_g];
+              ppv->y[ppv->index_pt_shear_ur] =
+                ppw->pv->y[ppw->pv->index_pt_shear_ur];
 
-              ppv->y[ppv->index_pt_l3_g] =
-                ppw->pv->y[ppw->pv->index_pt_l3_g];
+              if (ppw->approx[ppw->index_ap_ufa] == (int)ufa_off) {
 
-              for (l = 4; l <= ppw->pv->l_max_g; l++) {
+                ppv->y[ppv->index_pt_l3_ur] =
+                  ppw->pv->y[ppw->pv->index_pt_l3_ur];
 
-                ppv->y[ppv->index_pt_delta_g+l] =
-                  ppw->pv->y[ppw->pv->index_pt_delta_g+l];
-              }
+                for (l=4; l <= ppv->l_max_ur; l++)
+                  ppv->y[ppv->index_pt_delta_ur+l] =
+                    ppw->pv->y[ppw->pv->index_pt_delta_ur+l];
 
-              ppv->y[ppv->index_pt_pol0_g] =
-                ppw->pv->y[ppw->pv->index_pt_pol0_g];
-
-              ppv->y[ppv->index_pt_pol1_g] =
-                ppw->pv->y[ppw->pv->index_pt_pol1_g];
-
-              ppv->y[ppv->index_pt_pol2_g] =
-                ppw->pv->y[ppw->pv->index_pt_pol2_g];
-
-              ppv->y[ppv->index_pt_pol3_g] =
-                ppw->pv->y[ppw->pv->index_pt_pol3_g];
-
-              for (l = 4; l <= ppw->pv->l_max_pol_g; l++) {
-
-                ppv->y[ppv->index_pt_pol0_g+l] =
-                  ppw->pv->y[ppw->pv->index_pt_pol0_g+l];
               }
             }
+          }
 
-            if (pba->has_ur == _TRUE_) {
+          if (pba->has_idr == _TRUE_){
+            if (ppw->approx[ppw->index_ap_rsa_idr] == (int)rsa_idr_off){
 
-              if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
+              ppv->y[ppv->index_pt_delta_idr] =
+                ppw->pv->y[ppw->pv->index_pt_delta_idr];
 
+              ppv->y[ppv->index_pt_theta_idr] =
+                ppw->pv->y[ppw->pv->index_pt_theta_idr];
 
-                ppv->y[ppv->index_pt_delta_ur] =
-                  ppw->pv->y[ppw->pv->index_pt_delta_ur];
+              if (ppt->idr_nature == idr_free_streaming){
 
-                ppv->y[ppv->index_pt_theta_ur] =
-                  ppw->pv->y[ppw->pv->index_pt_theta_ur];
+                if (ppw->approx[ppw->index_ap_tca_idm_dr] == (int)tca_idm_dr_off){
 
-                ppv->y[ppv->index_pt_shear_ur] =
-                  ppw->pv->y[ppw->pv->index_pt_shear_ur];
+                  ppv->y[ppv->index_pt_shear_idr] =
+                    ppw->pv->y[ppw->pv->index_pt_shear_idr];
 
-                if (ppw->approx[ppw->index_ap_ufa] == (int)ufa_off) {
+                  ppv->y[ppv->index_pt_l3_idr] =
+                    ppw->pv->y[ppw->pv->index_pt_l3_idr];
 
-                  ppv->y[ppv->index_pt_l3_ur] =
-                    ppw->pv->y[ppw->pv->index_pt_l3_ur];
-
-                  for (l=4; l <= ppv->l_max_ur; l++)
-                    ppv->y[ppv->index_pt_delta_ur+l] =
-                      ppw->pv->y[ppw->pv->index_pt_delta_ur+l];
-
+                  for (l=4; l <= ppv->l_max_idr; l++)
+                    ppv->y[ppv->index_pt_delta_idr+l] =
+                      ppw->pv->y[ppw->pv->index_pt_delta_idr+l];
                 }
               }
             }
+          }
 
-            if (pba->has_idr == _TRUE_){
-              if (ppw->approx[ppw->index_ap_rsa_idr] == (int)rsa_idr_off){
-
-                ppv->y[ppv->index_pt_delta_idr] =
-                  ppw->pv->y[ppw->pv->index_pt_delta_idr];
-
-                ppv->y[ppv->index_pt_theta_idr] =
-                  ppw->pv->y[ppw->pv->index_pt_theta_idr];
-
-                if (ppt->idr_nature == idr_free_streaming){
-
-                  if (ppw->approx[ppw->index_ap_tca_idm_dr] == (int)tca_idm_dr_off){
-
-                    ppv->y[ppv->index_pt_shear_idr] =
-                      ppw->pv->y[ppw->pv->index_pt_shear_idr];
-
-                    ppv->y[ppv->index_pt_l3_idr] =
-                      ppw->pv->y[ppw->pv->index_pt_l3_idr];
-
-                    for (l=4; l <= ppv->l_max_idr; l++)
-                      ppv->y[ppv->index_pt_delta_idr+l] =
-                        ppw->pv->y[ppw->pv->index_pt_delta_idr+l];
-                  }
-                }
-              }
-            }
-
-            if (pba->has_ncdm == _TRUE_) {
-              index_pt = 0;
-              for (n_ncdm = 0; n_ncdm < ppv->N_ncdm; n_ncdm++){
-                for (index_q=0; index_q < ppv->q_size_ncdm[n_ncdm]; index_q++){
-                  for (l=0; l<=ppv->l_max_ncdm[n_ncdm]; l++){
-                    /* This is correct even when ncdmfa == off, since ppv->l_max_ncdm and
-                       ppv->q_size_ncdm is updated. */
-                    ppv->y[ppv->index_pt_psi0_ncdm1+index_pt] =
-                      ppw->pv->y[ppw->pv->index_pt_psi0_ncdm1+index_pt];
-                    index_pt++;
-                  }
+          if (pba->has_ncdm == _TRUE_) {
+            index_pt = 0;
+            for (n_ncdm = 0; n_ncdm < ppv->N_ncdm; n_ncdm++){
+              for (index_q=0; index_q < ppv->q_size_ncdm[n_ncdm]; index_q++){
+                for (l=0; l<=ppv->l_max_ncdm[n_ncdm]; l++){
+                  /* This is correct even when ncdmfa == off, since ppv->l_max_ncdm and
+                     ppv->q_size_ncdm is updated. */
+                  ppv->y[ppv->index_pt_psi0_ncdm1+index_pt] =
+                    ppw->pv->y[ppw->pv->index_pt_psi0_ncdm1+index_pt];
+                  index_pt++;
                 }
               }
             }
@@ -5537,7 +5542,6 @@ int perturbations_vector_init(
 
           if (ppt->perturbations_verbose>2)
             fprintf(stdout,"Mode k=%e: switch on dark PAcDR radiation streaming approximation at tau=%e\n",k,tau);
-
 
 
           if (ppw->approx[ppw->index_ap_rsa] == (int)rsa_off) {
@@ -5889,7 +5893,8 @@ int perturbations_initial_conditions(struct precision * ppr,
   double velocity_tot;
   double s2_squared;
   //spartacous_approx
-  double gam_pac=0.;
+  double Omega_m, Omega_1nu, Omega_rad, a_eq;
+  double gam_term1=0., gam_term2=0.;
   double fracpacdm=0., fracpacdr=0.;
   double delta_pacdr=0., delta_pacdm=0.;
   double theta_pacdr=0., theta_pacdm=0.;
@@ -6000,7 +6005,6 @@ int perturbations_initial_conditions(struct precision * ppr,
     /* f_pacdr = Omega_pacdr(t_i) / Omega_r(t_i) */
     if (pba->has_pacdr == _TRUE_) {
       fracpacdr = ppw->pvecback[pba->index_bg_rho_pacdr]/rho_r;
-      gam_pac = (a*ppw->pvecback[pba->index_bg_Gamma_pacdr])/a_prime_over_a;
     }
 
     /* f_pacdm = Omega_pacdm(t_i) / Omega_m(t_i) */
@@ -6025,6 +6029,20 @@ int perturbations_initial_conditions(struct precision * ppr,
     /* (k tau)^2, (k tau)^3 */
     ktau_two=k*k*tau*tau;
     ktau_three=k*tau*ktau_two;
+
+    //spartacous_approx
+    if (pba->has_pacdr == _TRUE_) {
+
+      // computing the scale factor at equality
+      Omega_m = pba->Omega0_cdm + pba->Omega0_b + pba->Omega0_pacdm;
+      Omega_1nu = 7./8.*pow(4./11.,4./3.)*pba->Omega0_g;
+      Omega_rad = pba->Omega0_g + (3.044+pba->N_UV)*Omega_1nu;
+      a_eq = Omega_rad/Omega_m;
+
+      gam_term1 = pba->Gamma_pacdr;
+      gam_term2 = gam_term1 + 4.*om*a_eq;
+    }
+    //spartacous_approx
 
 
     /* curvature-dependent factors */
@@ -6094,9 +6112,9 @@ int perturbations_initial_conditions(struct precision * ppr,
         }
         else {
 
-          theta_pacdm = - k*ktau_three/36. * (gam_pac/(4.+gam_pac)) * (1. - 3.*(fracpacdr*(gam_pac - 1.) + 5.*fracpacdm*gam_pac)/20./(fracpacdr*(5.+gam_pac)) * om*tau) * ppr->curvature_ini * s2_squared;
+          theta_pacdm = - k*ktau_three/36. * (gam_term1/gam_term2) * (1. - 3.*(3.*(fracpacdr + 5.*fracpacdm)*gam_term1 + 37.*fracpacdr*om*a_eq)/20./(3.*fracpacdr*(gam_term1 + 5.*om*a_eq)) * om*tau) * ppr->curvature_ini * s2_squared;
 
-          theta_pacdr = - k*ktau_three/36. * (1. - 3.*(5.*fracpacdm*gam_pac + fracpacdr*(4.+gam_pac))/20./(fracpacdr*(4.+gam_pac)) * om*tau) * ppr->curvature_ini * s2_squared;
+          theta_pacdr = - k*ktau_three/36. * (1. - 3.*(5.*fracpacdm*gam_term1 + fracpacdr*gam_term2)/20./(fracpacdr*gam_term2) * om*tau) * ppr->curvature_ini * s2_squared;
         }
       }
 
@@ -6398,7 +6416,8 @@ int perturbations_initial_conditions(struct precision * ppr,
       }
       if (pba->has_pacdr == _TRUE_) {
         delta_tot += (fracpacdr*delta_pacdr)/(1.+rho_m_over_rho_r);
-        velocity_tot += (4./3. * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);
+        velocity_tot += (4./3. * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);//MANUEL
+        // velocity_tot += ((1. + ppw->pvecback[pba->index_bg_w_pacdr]) * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);//MANUEL
       }
       //spartacous_approx
 
@@ -6435,7 +6454,8 @@ int perturbations_initial_conditions(struct precision * ppr,
       //spartacous_approx
       if (pba->has_pacdr == _TRUE_){
 
-        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 4.*a_prime_over_a*alpha;//NOTE: technically there should be a prefactor of 3*(1+w_pacdr)/4 to account for the fact that w_pacdr changes; but the initial time at which these conditions are set is well before the PAcDR transition step, so this prefactor is 1.
+        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 4.*a_prime_over_a*alpha;//NOTE: technically there should be a prefactor of 3*(1+w_pacdr)/4 to account for the fact that w_pacdr changes; but the initial time at which these conditions are set is well before the PAcDR transition step, so this prefactor is 1.//MANUEL
+        // ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 3.*(1. + ppw->pvecback[pba->index_bg_w_pacdr])*a_prime_over_a*alpha;//MANUEL
         ppw->pv->y[ppw->pv->index_pt_theta_pacdr] += k*k*alpha;
       }
       //spartacous_approx
@@ -6981,9 +7001,9 @@ int perturbations_approximations(
                  pba->error_message,
                  ppt->error_message);
 
-      // tau_trend = tau(z_tr/20.), which we take to be rougly the end of the transition time
+      // tau_trend = tau(z_tr/30), which we take to be rougly the end of the transition time
       class_call(background_tau_of_z(pba,
-                                     (z_tr*0.05),
+                                     (z_tr/30.),
                                      &tau_trend),
                  pba->error_message,
                  ppt->error_message);
@@ -7347,12 +7367,11 @@ int perturbations_einstein(
         // ppw->rho_plus_p_theta += 4./3.*ppw->pvecback[pba->index_bg_rho_idr]*ppw->rsa_theta_idr;????
       }
       //spartacous_approx
-      if ((pba->has_pacdr)&&(ppw->approx[ppw->index_ap_drsa] == (int)drsa_on)){
+      if ((pba->has_pacdr == _TRUE_)&&(ppw->approx[ppw->index_ap_drsa] == (int)drsa_on)){
 
         class_call(perturbations_drsa_delta_and_theta(ppr,pba,ppt,k,y,a_prime_over_a,ppw,ppt->error_message),
                    ppt->error_message,
                    ppt->error_message);
-        //MANUEL: TODO: why not add drsa_theta_pacdr to rho_plus_p_theta like in sync gauge?
       }
       //spartacous_approx
     }
@@ -7385,14 +7404,11 @@ int perturbations_einstein(
       }
 
       //spartacous_approx
-      if ((pba->has_pacdr)&&(ppw->approx[ppw->index_ap_drsa] == (int)drsa_on)){
+      if ((pba->has_pacdr == _TRUE_)&&(ppw->approx[ppw->index_ap_drsa] == (int)drsa_on)){
 
         class_call(perturbations_drsa_delta_and_theta(ppr,pba,ppt,k,y,a_prime_over_a,ppw,ppt->error_message),
                    ppt->error_message,
                    ppt->error_message);
-
-        ppw->rho_plus_p_theta += (1.+ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr]*ppw->drsa_theta_pacdr;
-        //MANUEL: TODO: why do we add drsa_theta_pacdr to rho_plus_p_theta, UNlike in sync gauge?
       }
       //spartacous_approx
 
@@ -7852,15 +7868,11 @@ int perturbations_total_stress_energy(
     }
     /* pacdr contribution */
     if (pba->has_pacdr == _TRUE_) {
-      // ppw->delta_rho += ppw->pvecback[pba->index_bg_rho_pacdr]*y[ppw->pv->index_pt_delta_pacdr];
-      // ppw->rho_plus_p_theta += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr])*y[ppw->pv->index_pt_theta_pacdr];
-      // ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*y[ppw->pv->index_pt_delta_pacdr];
-      // ppw->rho_plus_p_tot += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr]);
 
       //spartacous_approx
       ppw->delta_rho += ppw->pvecback[pba->index_bg_rho_pacdr]*delta_pacdr;
       ppw->rho_plus_p_theta += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr])*theta_pacdr;
-      ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*delta_pacdr;
+      ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*ppw->pvecback[pba->index_bg_rho_pacdr]*delta_pacdr;
       ppw->rho_plus_p_tot += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr]);
       //spartacous_approx
     }
@@ -11617,19 +11629,18 @@ int perturbations_dtca_slip(double * y,
   a_primeprime_over_a = pvecback[pba->index_bg_H_prime] * a + 2. * a_prime_over_a * a_prime_over_a;
   s2_squared = 1.-3.*pba->K/k2;
 
-  /** - (a) compute PAcDM- and PAcDR-related quantities */
+  /** - (a) compute PAcDM- and PAcDR-related quantities and their derivatives */
   w = pvecback[pba->index_bg_w_pacdr];
   cs2 = pvecback[pba->index_bg_cs2_pacdr];
   R = (1. + w) * pvecback[pba->index_bg_rho_pacdr]/pvecback[pba->index_bg_rho_pacdm];
   tau_c = 1./(a*pvecback[pba->index_bg_Gamma_pacdr]); /* PAcDM conformal mean-free-path */
-  varpi = (1.-3.*w) + dw;
-
-  /** - their derivatives */
   dw = pvecback[pba->index_bg_dw_pacdr];
   ddw = pvecback[pba->index_bg_ddw_pacdr];
   dcs2 = pvecback[pba->index_bg_dcs2_pacdr];
   dR = -(3.*w - dw);
   dtau_c = -(pvecback[pba->index_bg_dGamma_pacdr] + 1.);
+
+  varpi = (1.-3.*w) + dw;
   dvarpi = -3.*(1.+w)*dw + ddw;
 
   /** - --> (b) define short-cut notations for the scalar perturbations */
@@ -11746,6 +11757,11 @@ int perturbations_drsa_delta_and_theta(
 
     }
   }
+
+  // update total delta and theta given drsa approximation results */
+  ppw->delta_rho += ppw->pvecback[pba->index_bg_rho_pacdr]*ppw->drsa_delta_pacdr;
+  ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*ppw->pvecback[pba->index_bg_rho_pacdr]*ppw->drsa_delta_pacdr;
+  ppw->rho_plus_p_theta += (ppw->pvecback[pba->index_bg_rho_pacdr]+ppw->pvecback[pba->index_bg_p_pacdr])*ppw->drsa_theta_pacdr;
 
   return _SUCCESS_;
 
