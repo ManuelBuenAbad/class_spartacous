@@ -7,6 +7,8 @@
       4. revisit DRSA: do I need to change them because of the step? (since DRSA turns on after step, seems red herring)
       5. check varpi? (can't see why it would be a problem)
       6. DTCA: turn off sufficiently before x_fo? (but why no problem if DTCA=off? seems red herring)
+      7. Check if delta_p was gauge-transformed correctly
+      8. Check order of perturbations outputs: do they matter (like they do in background.c)?
 
  * Julien Lesgourgues, 23.09.2010
  *
@@ -11644,7 +11646,7 @@ int perturbations_dtca_slip(double * y,
   dvarpi = -3.*(1.+w)*dw + ddw;
 
   /** - --> (b) define short-cut notations for the scalar perturbations */
-  if (ppw->approx[ppw->index_ap_drsa] == (int)rsa_off) {
+  if (ppw->approx[ppw->index_ap_drsa] == (int)drsa_off) {
     delta_r = y[pv->index_pt_delta_pacdr];
     theta_r = y[pv->index_pt_theta_pacdr];
   }
@@ -11735,7 +11737,12 @@ int perturbations_drsa_delta_and_theta(
 
   k2 = k*k;
 
-  // formulas below TBC for curvaturema
+  // formulas below TBC for curvature
+
+  class_test(ppw->approx[ppw->index_ap_drsa] == (int)drsa_off,
+             "this function should not have been called now, bug was introduced",
+             ppt->error_message,
+             ppt->error_message);
 
   /* newtonian gauge */
   if (ppt->gauge == newtonian) {
