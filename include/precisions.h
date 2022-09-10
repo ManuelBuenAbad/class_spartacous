@@ -27,7 +27,8 @@ class_precision_parameter(tol_background_integration,double,1.e-10)
  * by this number multiplied by the timescale defined in
  * background_timescale (given by the sampling step)
  */
-class_precision_parameter(background_integration_stepsize,double,0.5)
+// class_precision_parameter(background_integration_stepsize,double,0.5)//MANUEL
+class_precision_parameter(background_integration_stepsize,double,0.1)
 /**
  * Tolerance of the deviation of \f$ \Omega_r \f$ from 1 for which to start integration:
  * The starting point of integration will be chosen,
@@ -313,6 +314,7 @@ class_precision_parameter(dark_tight_coupling_approximation,int,(int)first_order
 
 class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_k,double,0.003)  /**< when to switch off the SPartAcous dark-tight-coupling approximation, first condition (see normal tca for full definition) */
 class_precision_parameter(dark_tight_coupling_trigger_dtau_c_over_tau_h,double,0.0035) /**< when to switch off the SPartAcous dark-tight-coupling approximation, second condition (see normal tca for full definition) */
+class_precision_parameter(dark_tight_coupling_trigger_x_over_x_fo,double,0.8) /**< when to switch off the SPartAcous dark-tight-coupling approximation, third condition */
 //spartacous_approx
 
 class_precision_parameter(l_max_g,int,12)     /**< number of momenta in Boltzmann hierarchy for photon temperature (scalar), at least 4 */

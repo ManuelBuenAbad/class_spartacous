@@ -9,6 +9,7 @@
       6. DTCA: turn off sufficiently before x_fo? (but why no problem if DTCA=off? seems red herring)
       7. Check if delta_p was gauge-transformed correctly
       8. Check order of perturbations outputs: do they matter (like they do in background.c)?
+      9. Add rho_pacdr-3*p_pacdr to matter-like in backround.c Omega_m?
 
  * Julien Lesgourgues, 23.09.2010
  *
@@ -487,11 +488,11 @@ int perturbations_output_data(
           }
           class_store_double(dataptr,tk[ppt->index_tp_delta_dcdm],ppt->has_source_delta_dcdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_dr],ppt->has_source_delta_dr,storeidx);
-          class_store_double(dataptr,tk[ppt->index_tp_delta_scf],ppt->has_source_delta_scf,storeidx);
           //spartacous: storing delta results
           class_store_double(dataptr,tk[ppt->index_tp_delta_pacdm],ppt->has_source_delta_pacdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_pacdr],ppt->has_source_delta_pacdr,storeidx);
           //spartacous
+          class_store_double(dataptr,tk[ppt->index_tp_delta_scf],ppt->has_source_delta_scf,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_m],ppt->has_source_delta_m,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_delta_tot],ppt->has_source_delta_tot,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_phi],ppt->has_source_phi,storeidx);
@@ -520,11 +521,11 @@ int perturbations_output_data(
           }
           class_store_double(dataptr,tk[ppt->index_tp_theta_dcdm],ppt->has_source_theta_dcdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_dr],ppt->has_source_theta_dr,storeidx);
-          class_store_double(dataptr,tk[ppt->index_tp_theta_scf],ppt->has_source_theta_scf,storeidx);
           //spartacous: storing theta results
           class_store_double(dataptr,tk[ppt->index_tp_theta_pacdm],ppt->has_source_theta_pacdm,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_pacdr],ppt->has_source_theta_pacdr,storeidx);
           //spartacous
+          class_store_double(dataptr,tk[ppt->index_tp_theta_scf],ppt->has_source_theta_scf,storeidx);
           class_store_double(dataptr,tk[ppt->index_tp_theta_tot],ppt->has_source_theta_tot,storeidx);
 
         }
@@ -587,11 +588,11 @@ int perturbations_output_titles(
       }
       class_store_columntitle(titles,"d_dcdm",pba->has_dcdm);
       class_store_columntitle(titles,"d_dr",pba->has_dr);
-      class_store_columntitle(titles,"d_scf",pba->has_scf);
       //spartacous: delta column titles
       class_store_columntitle(titles,"d_pacdm",pba->has_pacdm);
       class_store_columntitle(titles,"d_pacdr",pba->has_pacdr);
       //spartacous
+      class_store_columntitle(titles,"d_scf",pba->has_scf);
       class_store_columntitle(titles,"d_m",ppt->has_source_delta_m);
       class_store_columntitle(titles,"d_tot",ppt->has_source_delta_tot);
       class_store_columntitle(titles,"phi",ppt->has_source_phi);
@@ -620,11 +621,11 @@ int perturbations_output_titles(
       }
       class_store_columntitle(titles,"t_dcdm",pba->has_dcdm);
       class_store_columntitle(titles,"t_dr",pba->has_dr);
-      class_store_columntitle(titles,"t_scf",pba->has_scf);
       //spartacous: theta column titles
       class_store_columntitle(titles,"t_pacdm",pba->has_pacdm);
       class_store_columntitle(titles,"t_pacdr",pba->has_pacdr);
       //spartacous
+      class_store_columntitle(titles,"t_scf",pba->has_scf);
       class_store_columntitle(titles,"t_tot",_TRUE_);
     }
   }
@@ -637,6 +638,7 @@ int perturbations_output_titles(
     class_store_columntitle(titles,"-T_g/k2",_TRUE_);
     class_store_columntitle(titles,"-T_ur/k2",_TRUE_);
     class_store_columntitle(titles,"-T_ncdm/k2",_TRUE_);
+    class_store_columntitle(titles,"-T_pacdm/k2",_TRUE_);
     class_store_columntitle(titles,"-T_tot/k2",_TRUE_);
 
   }
@@ -3526,9 +3528,6 @@ int perturbations_prepare_k_output(struct background * pba,
       class_store_columntitle(ppt->scalar_titles, "delta_dr", pba->has_dr);
       class_store_columntitle(ppt->scalar_titles, "theta_dr", pba->has_dr);
       class_store_columntitle(ppt->scalar_titles, "shear_dr", pba->has_dr);
-      /* Scalar field scf */
-      class_store_columntitle(ppt->scalar_titles, "delta_scf", pba->has_scf);
-      class_store_columntitle(ppt->scalar_titles, "theta_scf", pba->has_scf);
       //spartacous: column titles for new fluid perturbations
       /* PAcDM */
       class_store_columntitle(ppt->scalar_titles,"delta_pacdm",pba->has_pacdm);
@@ -3537,6 +3536,9 @@ int perturbations_prepare_k_output(struct background * pba,
       class_store_columntitle(ppt->scalar_titles,"delta_pacdr",pba->has_pacdr);
       class_store_columntitle(ppt->scalar_titles,"theta_pacdr",pba->has_pacdr);
       //spartacous
+      /* Scalar field scf */
+      class_store_columntitle(ppt->scalar_titles, "delta_scf", pba->has_scf);
+      class_store_columntitle(ppt->scalar_titles, "theta_scf", pba->has_scf);
       /** Fluid */
       class_store_columntitle(ppt->scalar_titles, "delta_rho_fld", pba->has_fld);
       class_store_columntitle(ppt->scalar_titles, "rho_plus_p_theta_fld", pba->has_fld);
@@ -4596,6 +4598,11 @@ int perturbations_vector_init(
                      ppt->error_message,
                      "at tau=%g: the dark PAcDR-PAcDM tight-coupling approximation can be switched off, not on",tau);
         }
+      }
+      if (pba->has_pacdr) {
+        class_test((ppw->approx[ppw->index_ap_drsa] == (int)drsa_on) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_on),
+                   ppt->error_message,
+                   "at tau=%g: both the dark PAcDR radiation-streaming and the PAcDR-PAcDM tight-coupling approximations are on. This cannot happen.",tau);
       }
       //spartacous_approx
 
@@ -5895,7 +5902,7 @@ int perturbations_initial_conditions(struct precision * ppr,
   double velocity_tot;
   double s2_squared;
   //spartacous_approx
-  double Omega_m, Omega_1nu, Omega_rad, a_eq;
+  double a_eq;
   double gam_term1=0., gam_term2=0.;
   double fracpacdm=0., fracpacdr=0.;
   double delta_pacdr=0., delta_pacdm=0.;
@@ -6035,11 +6042,8 @@ int perturbations_initial_conditions(struct precision * ppr,
     //spartacous_approx
     if (pba->has_pacdr == _TRUE_) {
 
-      // computing the scale factor at equality
-      Omega_m = pba->Omega0_cdm + pba->Omega0_b + pba->Omega0_pacdm;
-      Omega_1nu = 7./8.*pow(4./11.,4./3.)*pba->Omega0_g;
-      Omega_rad = pba->Omega0_g + (3.044+pba->N_UV)*Omega_1nu;
-      a_eq = Omega_rad/Omega_m;
+      // the scale factor at equality
+      a_eq = pba->a_eq;
 
       gam_term1 = pba->Gamma_pacdr;
       gam_term2 = gam_term1 + 4.*om*a_eq;
@@ -6114,7 +6118,7 @@ int perturbations_initial_conditions(struct precision * ppr,
         }
         else {
 
-          theta_pacdm = - k*ktau_three/36. * (gam_term1/gam_term2) * (1. - 3.*(3.*(fracpacdr + 5.*fracpacdm)*gam_term1 + 37.*fracpacdr*om*a_eq)/20./(3.*fracpacdr*(gam_term1 + 5.*om*a_eq)) * om*tau) * ppr->curvature_ini * s2_squared;
+          theta_pacdm = - k*ktau_three/36. * (gam_term1/gam_term2) * (1. - (3.*(fracpacdr + 5.*fracpacdm)*gam_term1 + 37.*fracpacdr*om*a_eq)/20./(fracpacdr*(gam_term1 + 5.*om*a_eq)) * om*tau) * ppr->curvature_ini * s2_squared;
 
           theta_pacdr = - k*ktau_three/36. * (1. - 3.*(5.*fracpacdm*gam_term1 + fracpacdr*gam_term2)/20./(fracpacdr*gam_term2) * om*tau) * ppr->curvature_ini * s2_squared;
         }
@@ -6764,10 +6768,10 @@ int perturbations_approximations(
 
   //spartacous_approx
   /* (d) time scale of PAcDR-PAcDM scattering */
-  double dtau_c = 0.;
+  double dtau_c = 0., x_dr = 0.;
   double Omega_m,Omega_1nu,Omega_rad;
-  double z_eq, z_tr;
-  double tau_eq, tau_tr, tau_trend;
+  double z_tr;
+  double tau_tr, tau_trend;
   //spartacous_approx
 
 
@@ -6957,6 +6961,8 @@ int perturbations_approximations(
 
         dtau_c = 1./(ppw->pvecback[pba->index_bg_Gamma_pacdr]*ppw->pvecback[pba->index_bg_a]);
 
+        x_dr = ppw->pvecback[pba->index_bg_xa_pacdr];
+
         class_test(dtau_c < 0.,
                    ppt->error_message,
                    "dtau_c = 1/(a*Gamma_pacdr) should always be positive unless there is something wrong in the background module. However you have here dtau_c=%e at z=%e, conformal time=%e.\n",
@@ -6965,7 +6971,7 @@ int perturbations_approximations(
                    tau);
 
         if ((dtau_c/tau_h < ppr->dark_tight_coupling_trigger_dtau_c_over_tau_h) &&
-            (dtau_c/tau_k < ppr->dark_tight_coupling_trigger_dtau_c_over_tau_k)) {
+            (dtau_c/tau_k < ppr->dark_tight_coupling_trigger_dtau_c_over_tau_k) && (x_dr/pba->xfo_pacdr < ppr->dark_tight_coupling_trigger_x_over_x_fo)) {
           ppw->approx[ppw->index_ap_dtca] = (int)dtca_on;
         }
         else {
@@ -6980,21 +6986,8 @@ int perturbations_approximations(
     /* - (d.2) dark PAcDR radiation streaming approximation */
     if (pba->has_pacdr == _TRUE_) {
 
-      // computing the reshift at equality
-      Omega_m = pba->Omega0_cdm + pba->Omega0_b + pba->Omega0_pacdm;
-      Omega_1nu = 7./8.*pow(4./11.,4./3.)*pba->Omega0_g;
-      Omega_rad = pba->Omega0_g + (3.044+pba->N_UV)*Omega_1nu;
-      z_eq = -1. + Omega_m/Omega_rad;
-
-      // computing the transition redshift
+      // the transition redshift
       z_tr = -1. + 1./pba->a_tr;
-
-      // tau_eq = tau(z_eq)
-      class_call(background_tau_of_z(pba,
-                                     z_eq,
-                                     &tau_eq),
-                 pba->error_message,
-                 ppt->error_message);
 
       // tau_tr = tau(z_tr)
       class_call(background_tau_of_z(pba,
@@ -7013,7 +7006,7 @@ int perturbations_approximations(
       // only switch on dark PAcDR radiation streaming approximation if: (i) DRSA is allowed, (ii) tau*k is larger than its trigger value (iii) deep in matter-domination, (iv) sufficiently after the end of the transition time, and (v) dark TCA is turned off
 
       // if ((ppr->dark_radiation_streaming_approximation != drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (z_p1 < zeq_p1*ppr->dark_radiation_streaming_trigger_z_over_zeq) && (z_p1 < ztr_p1*ppr->dark_radiation_streaming_trigger_z_over_ztr) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
-      if ((ppr->dark_radiation_streaming_approximation != drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (tau/tau_eq > ppr->dark_radiation_streaming_trigger_tau_over_tau_eq) && (tau/tau_trend > ppr->dark_radiation_streaming_trigger_tau_over_tau_trend) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
+      if ((ppr->dark_radiation_streaming_approximation != drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (tau/pba->tau_eq > ppr->dark_radiation_streaming_trigger_tau_over_tau_eq) && (tau/tau_trend > ppr->dark_radiation_streaming_trigger_tau_over_tau_trend) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
 
         ppw->approx[ppw->index_ap_drsa] = (int)drsa_on;
       }
@@ -7733,7 +7726,7 @@ int perturbations_total_stress_energy(
       }
       else {
 
-        /** - ----> (a.5.3.) tight coupling approximation */
+        /** - ----> (a.5.3.) dark tight coupling approximation */
 
         delta_pacdr = y[ppw->pv->index_pt_delta_pacdr];
         theta_pacdr = y[ppw->pv->index_pt_theta_pacdr];
@@ -7876,6 +7869,16 @@ int perturbations_total_stress_energy(
       ppw->rho_plus_p_theta += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr])*theta_pacdr;
       ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*ppw->pvecback[pba->index_bg_rho_pacdr]*delta_pacdr;
       ppw->rho_plus_p_tot += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr]);
+
+      //MANUEL
+      // if (ppt->has_source_delta_m == _TRUE_) {
+      //   delta_rho_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr]*y[ppw->pv->index_pt_delta_pacdr]; // contribution to delta rho_matter
+      //   rho_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr];
+      // }
+      // if ((ppt->has_source_delta_m == _TRUE_) || (ppt->has_source_theta_m == _TRUE_)) {
+      //   rho_plus_p_theta_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr]*y[ppw->pv->index_pt_theta_pacdr]; // contribution to [(rho+p)theta]_matter
+      //   rho_plus_p_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr];
+      // }
       //spartacous_approx
     }
     //spartacous
@@ -9414,6 +9417,7 @@ int perturbations_print_variables(double tau,
     dataptr = ppt->scalar_perturbations_data[ppw->index_ikout]+
       ppt->size_scalar_perturbation_data[ppw->index_ikout];
     ppt->size_scalar_perturbation_data[ppw->index_ikout] += ppt->number_of_scalar_titles;
+
 
     class_store_double(dataptr, tau, _TRUE_, storeidx);
     class_store_double(dataptr, pvecback[pba->index_bg_a], _TRUE_, storeidx);
