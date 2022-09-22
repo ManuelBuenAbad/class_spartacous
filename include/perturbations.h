@@ -17,7 +17,6 @@
  *  rsa = radiation streaming approximation,
  *  ufa = massless neutrinos / ultra-relativistic relics fluid approximation
 //spartacous_approx
-//TODO: generalize so that starting with TCA for SPartAcous only applies if Gamma >> H; also compute DRSA formulas exactly, when w != 1/3.
  *  dtca = dark tight-coupling approximation
  *  drsa = dark radiation streaming approximation)
 //spartacous_approx
@@ -192,6 +191,8 @@ struct perturbations
 
   //spartacous_approx
   short use_DTCA; /** < whether we will use the DTCA when appropriate */
+  short start_before_step; /** < whether we force the perturbations initial conditions to be before the PAcDR step */
+  double lambda_pacdr; /** < factor multiplying the first order in the expansion around w=cs2=1/3 for the initial conditions*/
   //spartacous_approx
   //@}
 

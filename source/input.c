@@ -3584,6 +3584,28 @@ int input_read_parameters_species(struct file_content * pfc,
     else
       ppr->dark_radiation_streaming_approximation = drsa_none;
   }
+
+  // whether we will force start the perturbations with initial conditions before the PAcDR step: need the flag 'yes'. NOTE: unstable for Newtonian Gauge!!!!
+  class_call(parser_read_string(pfc,"initial conditions before step",&string1,&flag7,errmsg),
+             errmsg,
+             errmsg);
+  if (flag7 == _TRUE_){
+    if ((string_begins_with(string1,'y') || string_begins_with(string1,'Y')) && (pba->Omega0_pacdr != 0.))
+      ppt->start_before_step = _TRUE_;
+    else
+      ppt->start_before_step = _FALSE_;
+  }
+
+  // whether we will expand the initial conditions around w=cs2=1/3: need the flag 'yes'.
+  class_call(parser_read_string(pfc,"expand initial conditions",&string1,&flag6,errmsg),
+             errmsg,
+             errmsg);
+  if (flag6 == _TRUE_){
+    if ((string_begins_with(string1,'y') || string_begins_with(string1,'Y')) && (pba->Omega0_pacdr != 0.))
+      ppt->lambda_pacdr = 1.;
+    else
+      ppt->lambda_pacdr = 0.;
+  }
   //spartacous_approx
 
   // TODO: REVISIT THIS, make more precise!
@@ -3614,6 +3636,14 @@ int input_read_parameters_species(struct file_content * pfc,
       printf("\tDark radiation streaming approximation (DRSA): ON.\n\n");
     else
       printf("\tDark radiation streaming approximation (DRSA): OFF.\n\n");
+    if (ppt->start_before_step == _TRUE_)
+      printf("\tForce perturbations initial conditions to start before PAcDR step: ON.\n\n");
+    else
+      printf("\tForce perturbations initial conditions to start before PAcDR step: OFF.\n\n");
+    if (ppt->lambda_pacdr == 1.)
+      printf("\tTaylor-expand cs2_pacdr and w_pacdr around 1/3 for initial conditions: ON.\n\n");
+    else
+      printf("\tTaylor-expand cs2_pacdr and w_pacdr around 1/3 for initial conditions: OFF.\n\n");
     printf("........................SPartAcous parameters passed........................\n\n");
     printf("\t -> Omega0_pacdm = %.4e\n", pba->Omega0_pacdm);
     printf("\t    .... f_pacdm = %g\n", pba->Omega0_pacdm/pba->Omega0_dm_tot);
@@ -6349,6 +6379,8 @@ int input_default_params(struct background *pba,
   pba->alpha_pac = 0.;
   pba->Gamma_pacdr = 0.;// [Mpc^-1] N.B.: 1.-2 is 5000 x larger than H_rad(z=0) ~ 2.e-6 Mpc^-1
   pba->GH_ratio = 0.;// UV Gamma/H ratio
+  ppt->start_before_step = _FALSE_;// start perturbations before step?
+  ppt->lambda_pacdr = 0.;// parameterizing first-order expansion around w=cs2=1/3
   //spartacous
 
   /** 9) Dark energy contributions */

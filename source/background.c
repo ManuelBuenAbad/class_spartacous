@@ -791,11 +791,11 @@ int background_functions(
 
     rho_tot += pvecback[pba->index_bg_rho_pacdr];
     p_tot += pvecback[pba->index_bg_p_pacdr];
-    // rho_r += pvecback[pba->index_bg_rho_pacdr];//MANUEL
-    rho_r += 3.*pvecback[pba->index_bg_p_pacdr];//MANUEL
+    // rho_r += pvecback[pba->index_bg_rho_pacdr];
+    rho_r += 3.*pvecback[pba->index_bg_p_pacdr];//copying ncdm fluid: what part of this fluid is radiation-like
     dp_dloga += ((1.+w_pacdr)*dw*dxdlna - 3.*(1.+w_pacdr)*w_pacdr) * pvecback[pba->index_bg_rho_pacdr];
-    // rho_m += 0.;//MANUEL
-    rho_m += (1. - 3.*pvecback[pba->index_bg_w_pacdr])*pvecback[pba->index_bg_rho_pacdr];//MANUEL
+    // rho_m += 0.;
+    rho_m += (1. - 3.*pvecback[pba->index_bg_w_pacdr])*pvecback[pba->index_bg_rho_pacdr];//copying ncdm fluid: what part of this fluid is matter-like
   }
   //spartacous
 

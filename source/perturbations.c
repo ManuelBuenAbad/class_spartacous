@@ -1,16 +1,5 @@
 /** @file perturbations.c Documented perturbation module
  *
- * MANUEL: TODO:
-      1. re-do initial conditions for _pacdr/_pacdm (re-check Mathematica .nb)
-      2. revisit the eta/_ur initial conditions (does Mathematica .nb gives something different?),
-      3. use delta_p instead of cs2*delta for pacdr? (27.a & 27.c in Ma & Bertsch.; seems red herring)
-      4. revisit DRSA: do I need to change them because of the step? (since DRSA turns on after step, seems red herring)
-      5. check varpi? (can't see why it would be a problem)
-      6. DTCA: turn off sufficiently before x_fo? (but why no problem if DTCA=off? seems red herring)
-      7. Check if delta_p was gauge-transformed correctly
-      8. Check order of perturbations outputs: do they matter (like they do in background.c)?
-      9. Add rho_pacdr-3*p_pacdr to matter-like in backround.c Omega_m?
-
  * Julien Lesgourgues, 23.09.2010
  *
  * Deals with the perturbation evolution.
@@ -1737,6 +1726,11 @@ int perturbations_timesampling_for_sources(
   double tau_lower;
   double tau_upper;
   double tau_mid;
+  //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+  // double tau_opaque, z_tr, tau_tr;
+  // double dark_timescale;
+  short after_step_begins = _FALSE_;
+  //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
 
   double timescale_source;
   double rate_thermo;
@@ -1796,6 +1790,25 @@ int perturbations_timesampling_for_sources(
                "your choice of initial time for computing sources is inappropriate: it corresponds to an earlier time than the one at which the integration of thermodynamical variables started (tau=%g). You should increase either 'start_sources_at_tau_c_over_tau_h' or 'recfast_z_initial'\n",
                tau_lower);
 
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+    // if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_)) {
+    //   // the transition redshift
+    //   z_tr = -1. + 1./pba->a_tr;
+    //
+    //   // tau_tr = tau(z_tr)
+    //   class_call(background_tau_of_z(pba,
+    //                                  z_tr,
+    //                                  &tau_tr),
+    //              pba->error_message,
+    //              ppt->error_message);
+    //
+    //   class_test(tau_lower/tau_tr >
+    //              ppr->start_at_tau_over_tau_tr,
+    //              ppt->error_message,
+    //              "your choice of initial time for computing sources is inappropriate: it corresponds to a later time than the one at which the PAcDR undergoes the step (tau=%g, tau_before_step=%g). You should increase either 'start_at_tau_over_tau_tr' or 'recfast_z_initial'\n",
+    //              tau_lower, tau_tr*ppr->start_at_tau_over_tau_tr);
+    // }
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
 
     tau_upper = pth->tau_rec;
 
@@ -1848,11 +1861,15 @@ int perturbations_timesampling_for_sources(
                  pth->error_message,
                  ppt->error_message);
 
+      //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+      // if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_))
+        // after_step_begins = (tau_mid/tau_tr > ppr->start_at_tau_over_tau_tr);
+      //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
 
-      if (pvecback[pba->index_bg_a]*
+      if ((pvecback[pba->index_bg_a]*
           pvecback[pba->index_bg_H]/
           pvecthermo[pth->index_th_dkappa] >
-          ppr->start_sources_at_tau_c_over_tau_h)
+          ppr->start_sources_at_tau_c_over_tau_h) || after_step_begins)//spartacous_approx
 
         tau_upper = tau_mid;
       else
@@ -1864,6 +1881,13 @@ int perturbations_timesampling_for_sources(
 
     tau_ini = tau_mid;
 
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+    // tau_opaque = tau_mid;
+    // making sure that we start evolution sufficiently before the step
+    // if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_)) {
+    //   tau_ini = MIN(tau_opaque, tau_tr*ppr->start_at_tau_over_tau_tr);
+    // }
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
   }
   else {
 
@@ -1958,6 +1982,24 @@ int perturbations_timesampling_for_sources(
       timescale_source = a_prime_over_a;
     }
 
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+    // if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_)) {
+    //   dark_timescale = sqrt(pow(pvecback[pba->index_bg_dGamma_pacdr]*a_prime_over_a, 2.) + pow(pvecback[pba->index_bg_dx_pacdr]*a_prime_over_a/pvecback[pba->index_bg_xa_pacdr], 2.) + pow(a_prime_over_a, 2.));
+    // }
+    // else {
+    //   dark_timescale = timescale_source;
+    // }
+    //
+    // if (ppt->start_before_step == _TRUE_) {
+    //   if (tau < tau_opaque) {// do not sample too small!
+    //     timescale_source = MIN(dark_timescale, timescale_source);
+    //   }
+    //   else {
+    //     timescale_source = sqrt(dark_timescale*dark_timescale + timescale_source*timescale_source);
+    //   }
+    // }
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+
     /* check it is non-zero */
     class_test(timescale_source == 0.,
                ppt->error_message,
@@ -2038,6 +2080,24 @@ int perturbations_timesampling_for_sources(
       a_prime_over_a = pvecback[pba->index_bg_H] * pvecback[pba->index_bg_a];
       timescale_source = a_prime_over_a;
     }
+
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
+    // if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_)) {
+    //   dark_timescale = sqrt(pow(pvecback[pba->index_bg_dGamma_pacdr]*a_prime_over_a, 2.) + pow(pvecback[pba->index_bg_dx_pacdr]*a_prime_over_a/pvecback[pba->index_bg_xa_pacdr], 2.) + pow(a_prime_over_a, 2.));
+    // }
+    // else {
+    //   dark_timescale = timescale_source;
+    // }
+    //
+    // if (ppt->start_before_step == _TRUE_) {
+    //   if (tau < tau_opaque) {// do not sample too small!
+    //     timescale_source = MIN(dark_timescale, timescale_source);
+    //   }
+    //   else {
+    //     timescale_source = sqrt(dark_timescale*dark_timescale + timescale_source*timescale_source);
+    //   }
+    // }
+    //spartacous_approx//MANUEL: COMMENTED: OUT OF MEMORY
 
     /* check it is non-zero */
     class_test(timescale_source == 0.,
@@ -3077,6 +3137,10 @@ int perturbations_solve(
 
   /* conformal time */
   double tau,tau_lower,tau_upper,tau_mid;
+  //spartacous_approx
+  double z_tr, tau_tr;
+  short after_step_begins = _FALSE_;
+  //spartacous_approx
 
   /* multipole */
   int l;
@@ -3211,6 +3275,21 @@ int perturbations_solve(
   /* start bisection */
   tau_mid = 0.5*(tau_lower + tau_upper);
 
+  //spartacous_approx
+  if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_)) {
+
+    // the transition redshift
+    z_tr = -1. + 1./pba->a_tr;
+
+    // tau_tr = tau(z_tr)
+    class_call(background_tau_of_z(pba,
+                                   z_tr,
+                                   &tau_tr),
+               pba->error_message,
+               ppt->error_message);
+  }
+  //spartacous_approx
+
   while ((tau_upper - tau_lower)/tau_lower > ppr->tol_tau_approx) {
 
     is_early_enough = _TRUE_;
@@ -3245,24 +3324,21 @@ int perturbations_solve(
                  pth->error_message,
                  ppt->error_message);
 
+      //spartacous_approx
+      if ((pba->has_pacdr == _TRUE_) && (ppt->start_before_step == _TRUE_))
+        after_step_begins = (tau_mid/tau_tr > ppr->start_at_tau_over_tau_tr);
+      //spartacous_approx
+
       if ((ppw->pvecback[pba->index_bg_a]*
            ppw->pvecback[pba->index_bg_H]/
            ppw->pvecthermo[pth->index_th_dkappa] >
            ppr->start_small_k_at_tau_c_over_tau_h) ||
           (k/ppw->pvecback[pba->index_bg_a]/ppw->pvecback[pba->index_bg_H] >
-           ppr->start_large_k_at_tau_h_over_tau_k))
+           ppr->start_large_k_at_tau_h_over_tau_k) ||
+          (after_step_begins))//spartacous_approx
 
         is_early_enough = _FALSE_;
     }
-
-    //spartacous_approx
-    /* checking we are sufficiently earlier than the PAcDR transition time */
-    if ((is_early_enough == _TRUE_) && (pba->has_pacdr == _TRUE_)) {
-
-      if (ppw->pvecback[pba->index_bg_a]/pba->a_tr > ppr->start_at_a_over_a_tr)
-        is_early_enough = _FALSE_;
-    }
-    //spartacous_approx
 
     if (is_early_enough == _TRUE_)
       tau_lower = tau_mid;
@@ -5903,8 +5979,9 @@ int perturbations_initial_conditions(struct precision * ppr,
   double s2_squared;
   //spartacous_approx
   double a_eq;
-  double gam_term1=0., gam_term2=0.;
+  double gam0=0., gam4=0., gam5=0.;
   double fracpacdm=0., fracpacdr=0.;
+  double lam=ppt->lambda_pacdr, dw=0., dc2=0.;
   double delta_pacdr=0., delta_pacdm=0.;
   double theta_pacdr=0., theta_pacdm=0.;
   //spartacous_approx
@@ -6014,6 +6091,10 @@ int perturbations_initial_conditions(struct precision * ppr,
     /* f_pacdr = Omega_pacdr(t_i) / Omega_r(t_i) */
     if (pba->has_pacdr == _TRUE_) {
       fracpacdr = ppw->pvecback[pba->index_bg_rho_pacdr]/rho_r;
+
+      // deviations from 1/3; we will write initial conditions as Taylor expansions of these variables.
+      dw = 3.*ppw->pvecback[pba->index_bg_w_pacdr] - 1.;
+      dc2 = 3.*ppw->pvecback[pba->index_bg_cs2_pacdr] - 1.;
     }
 
     /* f_pacdm = Omega_pacdm(t_i) / Omega_m(t_i) */
@@ -6045,8 +6126,9 @@ int perturbations_initial_conditions(struct precision * ppr,
       // the scale factor at equality
       a_eq = pba->a_eq;
 
-      gam_term1 = pba->Gamma_pacdr;
-      gam_term2 = gam_term1 + 4.*om*a_eq;
+      gam0 = pba->Gamma_pacdr;
+      gam4 = gam0 + 4.*om*a_eq;
+      gam5 = gam0 + 5.*om*a_eq;
     }
     //spartacous_approx
 
@@ -6077,12 +6159,21 @@ int perturbations_initial_conditions(struct precision * ppr,
          appear through the solution of Einstein equations and
          equations of motion. */
 
-      /* photon density */
-      ppw->pv->y[ppw->pv->index_pt_delta_g] = - ktau_two/3. * (1.-om*tau/5.)
+      /* photon density *///spartacous_approx
+      ppw->pv->y[ppw->pv->index_pt_delta_g] = - ktau_two/3.
+                    *(1.
+                      -om*tau/5.
+                      -lam*fracpacdr*(3.*dw - 2.*dc2)/8.
+                      -lam*fracpacdr*(86.*dc2 - 143.*dw)/600.*om*tau)
         * ppr->curvature_ini * s2_squared;
 
       /* photon velocity *///spartacous_approx
-      ppw->pv->y[ppw->pv->index_pt_theta_g] = - k*ktau_three/36. * (1.-3.*(1.+5.*fracb-fracnu-fracpacdr)/20./(1.-fracnu-fracpacdr)*om*tau)
+      ppw->pv->y[ppw->pv->index_pt_theta_g] = - k*ktau_three/36.
+                    *(1.
+                      -3.*(1.+5.*fracb-fracnu-fracpacdr)/20./(1.-fracnu-fracpacdr)*om*tau
+                      -lam*fracpacdr*(3.*dw - 2.*dc2)/8.
+                      +lam*fracpacdr*(fracb*(225.*dw-150.*dc2) + (1.-fracnu-fracpacdr)*(143.*dw - 86.*dc2))
+                      /(800.*(1. - fracnu - fracpacdr))*om*tau)
         * ppr->curvature_ini * s2_squared;
 
       /* tighly-coupled baryons */
@@ -6110,23 +6201,31 @@ int perturbations_initial_conditions(struct precision * ppr,
       //spartacous_approx
       if ((pba->has_pacdm == _TRUE_) && (pba->has_pacdr == _TRUE_)) {
 
-        if (ppw->approx[ppw->index_ap_dtca]==(int)dtca_on) {
+        theta_pacdm = - k*ktau_three/36. * (gam0/gam4)
+             *(1.
+               -(3.*(fracpacdr + 5.*fracpacdm)*gam0 + 37.*fracpacdr*om*a_eq)/20./(fracpacdr*gam5)*om*tau
+               +lam*(3.*dw*(4.-3.*fracpacdr) + dc2*(20. + 6.*fracpacdr))/24.
+               -lam*(gam0*(dw*(450.*fracpacdm - fracpacdr*(30. + 675.*fracpacdm) - 429.*fracpacdr*fracpacdr)
+                           +dc2*(1950.*fracpacdm + fracpacdr*(330. + 450.*fracpacdm) + 258.*fracpacdr*fracpacdr))
+                     +om*a_eq*(dw*fracpacdr*(1380. - 2841.*fracpacdr)
+                                +dc2*fracpacdr*(3820. + 1782.*fracpacdr)))
+                    /(2400.*fracpacdr*gam5)*om*tau)
+        * ppr->curvature_ini * s2_squared;
 
-          theta_pacdm = - k*ktau_three/36. * (1.-3.*(fracpacdr+5.*fracpacdm)/20./(fracpacdr)*om*tau) * ppr->curvature_ini * s2_squared;
-
-          theta_pacdr = theta_pacdm;
-        }
-        else {
-
-          theta_pacdm = - k*ktau_three/36. * (gam_term1/gam_term2) * (1. - (3.*(fracpacdr + 5.*fracpacdm)*gam_term1 + 37.*fracpacdr*om*a_eq)/20./(fracpacdr*(gam_term1 + 5.*om*a_eq)) * om*tau) * ppr->curvature_ini * s2_squared;
-
-          theta_pacdr = - k*ktau_three/36. * (1. - 3.*(5.*fracpacdm*gam_term1 + fracpacdr*gam_term2)/20./(fracpacdr*gam_term2) * om*tau) * ppr->curvature_ini * s2_squared;
-        }
+        theta_pacdr = - k*ktau_three/36.
+              *(1.
+                -3.*(5.*fracpacdm*gam0 + fracpacdr*gam4)/20./(fracpacdr*gam4) * om*tau
+                +lam*(3.*dw*(4.-3.*fracpacdr) + dc2*(20. + 6.*fracpacdr))/24.
+                -lam*(dc2*(110. + 86.*fracpacdr) - dw*(10. + 143.*fracpacdr)
+                      +25.*(fracpacdm/fracpacdr)*(gam0/gam4)*(dw*(6. - 9.*fracpacdr) + dc2*(26. + 6.*fracpacdr)))
+                      /800. *om*tau )
+          * ppr->curvature_ini * s2_squared;
       }
 
       if (pba->has_pacdm == _TRUE_) {
 
         delta_pacdm = 3./4.*ppw->pv->y[ppw->pv->index_pt_delta_g];
+
         ppw->pv->y[ppw->pv->index_pt_delta_pacdm] = delta_pacdm; /* pacdm density */
 
         if (pba->has_pacdr == _TRUE_)
@@ -6140,13 +6239,25 @@ int perturbations_initial_conditions(struct precision * ppr,
 
       if (pba->has_pacdr == _TRUE_) {
 
-        delta_pacdr = ppw->pv->y[ppw->pv->index_pt_delta_g];
-        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] = delta_pacdr; /* pacdr density *///NOTE: technically there should be a prefactor of 3*(1+w_pacdr)/4 to account for the fact that w_pacdr changes; but the initial time at which these conditions are set is well before the PAcDR transition step, so this prefactor is 1.
+        delta_pacdr = - ktau_two/3.
+              *(1.
+                -om*tau/5.
+                -lam*(fracpacdr-2.)*(3.*dw - 2.*dc2)/8.
+                -lam*(2.*dc2*(5. + 43.*fracpacdr) + dw*(20. - 143.*fracpacdr))/600. *om*tau)
+          * ppr->curvature_ini * s2_squared;;
+
+        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] = delta_pacdr; /* pacdr density */
 
         if (pba->has_pacdm == _TRUE_)
           ppw->pv->y[ppw->pv->index_pt_theta_pacdr] = theta_pacdr;
         else {
-          theta_pacdr = - k*ktau_three/36. * (1. - 3./20. * om*tau) * ppr->curvature_ini * s2_squared;
+          theta_pacdr = - k*ktau_three/36.
+                *(1.
+                  -3./20.*om*tau
+                  +lam*(3.*dw*(4.-3.*fracpacdr) + dc2*(20. + 6.*fracpacdr))/24.
+                  -lam*(dc2*(110. + 86.*fracpacdr) - dw*(10. + 143.*fracpacdr))
+                        /800. *om*tau )
+            * ppr->curvature_ini * s2_squared;
           ppw->pv->y[ppw->pv->index_pt_theta_pacdr] = theta_pacdr;
         }
       }
@@ -6194,11 +6305,36 @@ int perturbations_initial_conditions(struct precision * ppr,
         //TODO: are the formulas below correct? Because I'm getting something different.
 
         /* velocity of ultra-relativistic neutrinos/relics */ //TBC
-        theta_ur = - k*ktau_three/36./(4.*fracnu+15.) * (4.*fracnu+11.+12.*s2_squared-3.*(8.*fracnu*fracnu+50.*fracnu+275.)/20./(2.*fracnu+15.)*tau*om) * ppr->curvature_ini * s2_squared;
+        theta_ur = - k*ktau_three/36./(4.*fracnu+15.)
+                *(4.*fracnu+11.+12.*s2_squared
+                  -3.*(8.*fracnu*fracnu+50.*fracnu+275.)/20./(2.*fracnu+15.)*tau*om
+                  -lam*fracpacdr*(9.*dw*(19. + 4.*fracnu + 12.*s2_squared) - 2.*dc2*(-7. + 12.*fracnu + 36.*s2_squared))/24.
+                  -lam*(-300.*dc2*fracpacdm*(gam0/gam4)*(15. + 4.*fracnu) +
+                        fracpacdr*(2.*dc2*(235. + 7740.*s2_squared +
+                                           2.*fracnu*(1543. + 172.*fracnu + 432.*s2_squared))
+                                   -dw*(45.*(733. + 572.*s2_squared) +
+                                        2.*fracnu*(5943. + 572.*fracnu + 1632.*s2_squared))))
+                      /(800.*(15. + 2.*fracnu))
+                      *om*tau)
+          * ppr->curvature_ini * s2_squared;
 
-        shear_ur = ktau_two/(45.+12.*fracnu) * (3.*s2_squared-1.) * (1.+(4.*fracnu-5.)/4./(2.*fracnu+15.)*tau*om) * ppr->curvature_ini;//TBC /s2_squared; /* shear of ultra-relativistic neutrinos/relics */  //TBC:0
+        shear_ur = ktau_two/(45.+12.*fracnu) * (3.*s2_squared-1.)
+                *(1.
+                  +(4.*fracnu-5.)/4./(2.*fracnu+15.)*tau*om
+                  +lam*fracpacdr*(2.*dc2*(-13. + 9.*s2_squared) -9.*dw*(1. + 3.*s2_squared))
+                    /(-24. + 72.*s2_squared)
+                  -lam*(-(150.*dc2*(15. + 4.*fracnu)*fracpacdm)*(gam0/gam4)
+                        +fracpacdr*(-3.*dw*(135. - 164.*fracnu + 4290.*s2_squared + 544.*fracnu*s2_squared)
+                                    + dc2*(-9440. + 7740.*s2_squared +16.*fracnu*(-49. + 54.*s2_squared))))
+                     /(1200.*(15. + 2.*fracnu)*(-1. + 3.*s2_squared))
+                     *om*tau)
+            * ppr->curvature_ini;//TBC /s2_squared; /* shear of ultra-relativistic neutrinos/relics */  //TBC:0
 
-        l3_ur = ktau_three*2./7./(12.*fracnu+45.)* ppr->curvature_ini;//TBC
+        l3_ur = ktau_three*
+                  (2./7./(12.*fracnu+45.)
+                   +lam*fracpacdr*(2.*dc2*(-13. + 9.*s2_squared) - 9.*dw*(1. + 3.*s2_squared))
+                            /(252.*(15. + 4.*fracnu)))
+          * ppr->curvature_ini;//TBC
 
         if (pba->has_dr == _TRUE_) delta_dr = delta_ur;
 
@@ -6207,7 +6343,16 @@ int perturbations_initial_conditions(struct precision * ppr,
       /* synchronous metric perturbation eta */
       //eta = ppr->curvature_ini * (1.-ktau_two/12./(15.+4.*fracnu)*(5.+4.*fracnu - (16.*fracnu*fracnu+280.*fracnu+325)/10./(2.*fracnu+15.)*tau*om)) /  s2_squared;
       //eta = ppr->curvature_ini * s2_squared * (1.-ktau_two/12./(15.+4.*fracnu)*(15.*s2_squared-10.+4.*s2_squared*fracnu - (16.*fracnu*fracnu+280.*fracnu+325)/10./(2.*fracnu+15.)*tau*om));
-      eta = ppr->curvature_ini * (1.-ktau_two/12./(15.+4.*fracnu)*(5.+4.*s2_squared*fracnu - (16.*fracnu*fracnu+280.*fracnu+325)/10./(2.*fracnu+15.)*tau*om));
+      eta = ppr->curvature_ini
+              *(1.
+                -ktau_two/12./(15.+4.*fracnu)*(5.+4.*s2_squared*fracnu - (16.*fracnu*fracnu+280.*fracnu+325)/10./(2.*fracnu+15.)*tau*om)
+                -lam*fracpacdr*(dc2*(130. + 24.*fracnu*s2_squared)
+                                +dw*(45. - 36.*fracnu*s2_squared))/(288.*(15. + 4.*fracnu))
+                +lam*(5.*fracpacdm*(gam0/gam4)*dc2/96.
+                      +fracpacdr*(dc2*(5900. + 490.*fracnu + fracnu*(1395. + 172.*fracnu)*s2_squared)
+                                  +(dw/8.)*(2025. - 4.*fracnu*(615. + (4395. + 572.*fracnu)*s2_squared)))
+                                /(1800.*(15. + 4.*fracnu)))
+                  /(15. + 2.*fracnu)*om*tau);
 
     }
 
@@ -6422,8 +6567,7 @@ int perturbations_initial_conditions(struct precision * ppr,
       }
       if (pba->has_pacdr == _TRUE_) {
         delta_tot += (fracpacdr*delta_pacdr)/(1.+rho_m_over_rho_r);
-        velocity_tot += (4./3. * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);//MANUEL
-        // velocity_tot += ((1. + ppw->pvecback[pba->index_bg_w_pacdr]) * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);//MANUEL
+        velocity_tot += ((1. + ppw->pvecback[pba->index_bg_w_pacdr]) * fracpacdr*theta_pacdr)/(1.+rho_m_over_rho_r);
       }
       //spartacous_approx
 
@@ -6460,8 +6604,7 @@ int perturbations_initial_conditions(struct precision * ppr,
       //spartacous_approx
       if (pba->has_pacdr == _TRUE_){
 
-        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 4.*a_prime_over_a*alpha;//NOTE: technically there should be a prefactor of 3*(1+w_pacdr)/4 to account for the fact that w_pacdr changes; but the initial time at which these conditions are set is well before the PAcDR transition step, so this prefactor is 1.//MANUEL
-        // ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 3.*(1. + ppw->pvecback[pba->index_bg_w_pacdr])*a_prime_over_a*alpha;//MANUEL
+        ppw->pv->y[ppw->pv->index_pt_delta_pacdr] -= 3.*(1. + ppw->pvecback[pba->index_bg_w_pacdr])*a_prime_over_a*alpha;
         ppw->pv->y[ppw->pv->index_pt_theta_pacdr] += k*k*alpha;
       }
       //spartacous_approx
@@ -7006,7 +7149,7 @@ int perturbations_approximations(
       // only switch on dark PAcDR radiation streaming approximation if: (i) DRSA is allowed, (ii) tau*k is larger than its trigger value (iii) deep in matter-domination, (iv) sufficiently after the end of the transition time, and (v) dark TCA is turned off
 
       // if ((ppr->dark_radiation_streaming_approximation != drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (z_p1 < zeq_p1*ppr->dark_radiation_streaming_trigger_z_over_zeq) && (z_p1 < ztr_p1*ppr->dark_radiation_streaming_trigger_z_over_ztr) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
-      if ((ppr->dark_radiation_streaming_approximation != drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (tau/pba->tau_eq > ppr->dark_radiation_streaming_trigger_tau_over_tau_eq) && (tau/tau_trend > ppr->dark_radiation_streaming_trigger_tau_over_tau_trend) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
+      if ((ppr->dark_radiation_streaming_approximation != (int)drsa_none) && (tau/tau_k > ppr->dark_radiation_streaming_trigger_tau_over_tau_k) && (tau/pba->tau_eq > ppr->dark_radiation_streaming_trigger_tau_over_tau_eq) && (tau/tau_trend > ppr->dark_radiation_streaming_trigger_tau_over_tau_trend) && (ppw->approx[ppw->index_ap_dtca] == (int)dtca_off)) {
 
         ppw->approx[ppw->index_ap_drsa] = (int)drsa_on;
       }
@@ -7869,16 +8012,6 @@ int perturbations_total_stress_energy(
       ppw->rho_plus_p_theta += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr])*theta_pacdr;
       ppw->delta_p += ppw->pvecback[pba->index_bg_cs2_pacdr]*ppw->pvecback[pba->index_bg_rho_pacdr]*delta_pacdr;
       ppw->rho_plus_p_tot += (ppw->pvecback[pba->index_bg_rho_pacdr] + ppw->pvecback[pba->index_bg_p_pacdr]);
-
-      //MANUEL
-      // if (ppt->has_source_delta_m == _TRUE_) {
-      //   delta_rho_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr]*y[ppw->pv->index_pt_delta_pacdr]; // contribution to delta rho_matter
-      //   rho_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr];
-      // }
-      // if ((ppt->has_source_delta_m == _TRUE_) || (ppt->has_source_theta_m == _TRUE_)) {
-      //   rho_plus_p_theta_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr]*y[ppw->pv->index_pt_theta_pacdr]; // contribution to [(rho+p)theta]_matter
-      //   rho_plus_p_m += (1. - 3.*ppw->pvecback[pba->index_bg_w_pacdr])*ppw->pvecback[pba->index_bg_rho_pacdr];
-      // }
       //spartacous_approx
     }
     //spartacous
@@ -9812,7 +9945,8 @@ int perturbations_derivs(double tau,
     w_pac = pvecback[pba->index_bg_w_pacdr];
     cs2_pac = pvecback[pba->index_bg_cs2_pacdr];
     dw_pac = pvecback[pba->index_bg_dw_pacdr];
-    varpi = (1.-3.*w_pac) + dw_pac;
+    // varpi = (1.-3.*w_pac) + dw_pac;// turns out this is the same as the expression below, which is simpler and more intuitive
+    varpi = 1.-3.*cs2_pac;
 
     if (pba->has_pacdm == _TRUE_) {
 
@@ -11646,8 +11780,10 @@ int perturbations_dtca_slip(double * y,
   dR = -(3.*w - dw);
   dtau_c = -(pvecback[pba->index_bg_dGamma_pacdr] + 1.);
 
-  varpi = (1.-3.*w) + dw;
-  dvarpi = -3.*(1.+w)*dw + ddw;
+  // varpi = (1.-3.*w) + dw;// turns out this is the same as the expression below, which is simpler and more intuitive
+  varpi = 1.-3.*cs2;
+  // dvarpi = -3.*(1.+w)*dw + ddw;// turns out this is the same as the expression below, which is simpler and more intuitive
+  dvarpi = -3.*dcs2;
 
   /** - --> (b) define short-cut notations for the scalar perturbations */
   if (ppw->approx[ppw->index_ap_drsa] == (int)drsa_off) {

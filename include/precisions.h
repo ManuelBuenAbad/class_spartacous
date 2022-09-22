@@ -27,8 +27,10 @@ class_precision_parameter(tol_background_integration,double,1.e-10)
  * by this number multiplied by the timescale defined in
  * background_timescale (given by the sampling step)
  */
-// class_precision_parameter(background_integration_stepsize,double,0.5)//MANUEL
+//spartacous_approx
+// class_precision_parameter(background_integration_stepsize,double,0.5)
 class_precision_parameter(background_integration_stepsize,double,0.1)
+//spartacous_approx
 /**
  * Tolerance of the deviation of \f$ \Omega_r \f$ from 1 for which to start integration:
  * The starting point of integration will be chosen,
@@ -269,7 +271,7 @@ class_precision_parameter(start_small_k_at_tau_c_over_tau_h,double,0.0015) /**< 
 class_precision_parameter(start_large_k_at_tau_h_over_tau_k,double,0.07)  /**< largest wavelengths start being sampled when mode is sufficiently outside Hubble scale. This is quantified in terms of the ratio of hubble time scale to wavenumber time scale, \f$ \tau_h/\tau_k \f$ which is roughly equal to (k*tau). Start when this ratio equals start_large_k_at_tau_k_over_tau_h. Decrease this value to start integrating the wavenumbers earlier in time. */
 
 //spartacous_approx
-class_precision_parameter(start_at_a_over_a_tr,double,0.005)  /**< all wavelengths start being sampled when PAcDR is sufficiently radiation-like (i.e. sufficiently before the step transition time). This is quantified in terms of the ratio of the scale factor hubble the transition scale factor, \f$ a/a_tr \f$. Start when this ratio equals start_at_a_over_a_tr. Decrease this value to start integrating the wavenumbers earlier in time. */
+class_precision_parameter(start_at_tau_over_tau_tr,double,0.02)  /**< all wavelengths start being sampled when PAcDR is sufficiently radiation-like (i.e. sufficiently before the step transition time). This is quantified in terms of the ratio of the conformal time to the conformal time of the transition, \f$ tau/tau_tr \f$. Start when this ratio equals start_at_tau_over_tau_tr. Decrease this value to start integrating the wavenumbers earlier in time. */
 //spartacous_approx
 
 /**
