@@ -2791,6 +2791,28 @@ cdef class Class:
                 value = self.sd.sd_parameter_table[1]
             elif name == 'mu_sd':
                 value = self.sd.sd_parameter_table[2]
+            # spartacous
+            elif name == 'Omega_pacdm':
+                value = self.ba.Omega0_pacdm
+            elif name == 'omega_pacdm':
+                value = self.ba.Omega0_pacdm*self.ba.h*self.ba.h
+            elif name == 'Omega_pacdr':
+                value = self.ba.Omega0_pacdr
+            elif name == 'omega_pacdr':
+                value = self.ba.Omega0_pacdr*self.ba.h*self.ba.h
+            elif name == 'xi_pacdr':
+                value = (self.ba.T_pacdr)/(self.ba.T_cmb)
+            elif name == 'N_IR':
+                value = self.ba.N_IR
+            elif name == 'N_UV':
+                value = self.ba.N_UV
+            elif name == 'Gamma_pac':
+                value = self.ba.Gamma_pacdr
+            elif name == 'alpha_pac':
+                value = self.ba.alpha_pac
+            elif name == 'GH_ratio':
+                value = self.ba.GH_ratio
+            # spartacous
             else:
                 raise CosmoSevereError("%s was not recognized as a derived parameter" % name)
             derived[name] = value
