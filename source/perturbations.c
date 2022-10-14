@@ -5501,6 +5501,13 @@ int perturbations_vector_init(
 
 
           //spartacous
+          class_test((pba->has_pacdr == _FALSE_),
+                     ppt->error_message,
+                     "Somehow DTCA switched ON -> OFF even though there is no PAcDR. This should not have happened.");
+          class_test((pba->has_pacdm == _FALSE_),
+                     ppt->error_message,
+                     "Somehow DTCA switched ON -> OFF even though there is no PAcDM. This should not have happened.");
+
           ppv->y[ppv->index_pt_delta_pacdr] =
             ppw->pv->y[ppw->pv->index_pt_delta_pacdr];
 
@@ -5979,7 +5986,7 @@ int perturbations_initial_conditions(struct precision * ppr,
   double s2_squared;
   //spartacous_approx
   double a_eq;
-  double gam0=0., gam4=0., gam5=0.;
+  double gam0=0., gam4=0., gam5=0., gam_ratio=0.;
   double fracpacdm=0., fracpacdr=0.;
   double lam=ppt->lambda_pacdr, dw=0., dc2=0.;
   double delta_pacdr=0., delta_pacdm=0.;
@@ -6129,6 +6136,7 @@ int perturbations_initial_conditions(struct precision * ppr,
       gam0 = pba->Gamma_pacdr;
       gam4 = gam0 + 4.*om*a_eq;
       gam5 = gam0 + 5.*om*a_eq;
+      gam_ratio = (gam0/gam4);
     }
     //spartacous_approx
 
@@ -6201,7 +6209,7 @@ int perturbations_initial_conditions(struct precision * ppr,
       //spartacous_approx
       if ((pba->has_pacdm == _TRUE_) && (pba->has_pacdr == _TRUE_)) {
 
-        theta_pacdm = - k*ktau_three/36. * (gam0/gam4)
+        theta_pacdm = - k*ktau_three/36. * (gam_ratio)
              *(1.
                -(3.*(fracpacdr + 5.*fracpacdm)*gam0 + 37.*fracpacdr*om*a_eq)/20./(fracpacdr*gam5)*om*tau
                +lam*(3.*dw*(4.-3.*fracpacdr) + dc2*(20. + 6.*fracpacdr))/24.
@@ -6217,7 +6225,7 @@ int perturbations_initial_conditions(struct precision * ppr,
                 -3.*(5.*fracpacdm*gam0 + fracpacdr*gam4)/20./(fracpacdr*gam4) * om*tau
                 +lam*(3.*dw*(4.-3.*fracpacdr) + dc2*(20. + 6.*fracpacdr))/24.
                 -lam*(dc2*(110. + 86.*fracpacdr) - dw*(10. + 143.*fracpacdr)
-                      +25.*(fracpacdm/fracpacdr)*(gam0/gam4)*(dw*(6. - 9.*fracpacdr) + dc2*(26. + 6.*fracpacdr)))
+                      +25.*(fracpacdm/fracpacdr)*(gam_ratio)*(dw*(6. - 9.*fracpacdr) + dc2*(26. + 6.*fracpacdr)))
                       /800. *om*tau )
           * ppr->curvature_ini * s2_squared;
       }
@@ -6309,7 +6317,7 @@ int perturbations_initial_conditions(struct precision * ppr,
                 *(4.*fracnu+11.+12.*s2_squared
                   -3.*(8.*fracnu*fracnu+50.*fracnu+275.)/20./(2.*fracnu+15.)*tau*om
                   -lam*fracpacdr*(9.*dw*(19. + 4.*fracnu + 12.*s2_squared) - 2.*dc2*(-7. + 12.*fracnu + 36.*s2_squared))/24.
-                  -lam*(-300.*dc2*fracpacdm*(gam0/gam4)*(15. + 4.*fracnu) +
+                  -lam*(-300.*dc2*fracpacdm*(gam_ratio)*(15. + 4.*fracnu) +
                         fracpacdr*(2.*dc2*(235. + 7740.*s2_squared +
                                            2.*fracnu*(1543. + 172.*fracnu + 432.*s2_squared))
                                    -dw*(45.*(733. + 572.*s2_squared) +
@@ -6323,7 +6331,7 @@ int perturbations_initial_conditions(struct precision * ppr,
                   +(4.*fracnu-5.)/4./(2.*fracnu+15.)*tau*om
                   +lam*fracpacdr*(2.*dc2*(-13. + 9.*s2_squared) -9.*dw*(1. + 3.*s2_squared))
                     /(-24. + 72.*s2_squared)
-                  -lam*(-(150.*dc2*(15. + 4.*fracnu)*fracpacdm)*(gam0/gam4)
+                  -lam*(-(150.*dc2*(15. + 4.*fracnu)*fracpacdm)*(gam_ratio)
                         +fracpacdr*(-3.*dw*(135. - 164.*fracnu + 4290.*s2_squared + 544.*fracnu*s2_squared)
                                     + dc2*(-9440. + 7740.*s2_squared +16.*fracnu*(-49. + 54.*s2_squared))))
                      /(1200.*(15. + 2.*fracnu)*(-1. + 3.*s2_squared))
@@ -6348,7 +6356,7 @@ int perturbations_initial_conditions(struct precision * ppr,
                 -ktau_two/12./(15.+4.*fracnu)*(5.+4.*s2_squared*fracnu - (16.*fracnu*fracnu+280.*fracnu+325)/10./(2.*fracnu+15.)*tau*om)
                 -lam*fracpacdr*(dc2*(130. + 24.*fracnu*s2_squared)
                                 +dw*(45. - 36.*fracnu*s2_squared))/(288.*(15. + 4.*fracnu))
-                +lam*(5.*fracpacdm*(gam0/gam4)*dc2/96.
+                +lam*(5.*fracpacdm*(gam_ratio)*dc2/96.
                       +fracpacdr*(dc2*(5900. + 490.*fracnu + fracnu*(1395. + 172.*fracnu)*s2_squared)
                                   +(dw/8.)*(2025. - 4.*fracnu*(615. + (4395. + 572.*fracnu)*s2_squared)))
                                 /(1800.*(15. + 4.*fracnu)))

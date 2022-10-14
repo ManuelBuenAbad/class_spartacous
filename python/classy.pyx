@@ -2810,6 +2810,8 @@ cdef class Class:
                 value = self.ba.Gamma_pacdr
             elif name == 'alpha_pac':
                 value = self.ba.alpha_pac
+            elif name == 'm_pacdr':
+                value = self.ba.m_pacdr
             elif name == 'GH_ratio':
                 value = self.ba.GH_ratio
             # spartacous

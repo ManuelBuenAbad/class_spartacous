@@ -6361,7 +6361,7 @@ int input_default_params(struct background *pba,
   /** 7.2.5.b) PAcDR */
   pba->dr_sub_stat = fermion;
   pba->ignore_NUV_BBN = _TRUE_;
-  ppt->use_DTCA = _TRUE_;
+  ppt->use_DTCA = _FALSE_;
   pba->Omega0_pacdr = 0.;
   pba->N_UV = 0.;
   pba->N_IR = 0.;
