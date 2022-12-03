@@ -2814,6 +2814,10 @@ cdef class Class:
                 value = self.ba.m_pacdr
             elif name == 'GH_ratio':
                 value = self.ba.GH_ratio
+            elif name == 'log10GH_ratio':
+                value = np.log10(self.ba.GH_ratio)
+            elif name == 'log10alpha_pac':
+                value = np.log10(self.ba.alpha_pac)
             elif name == 'S_8':
                 value = self.fo.sigma8[self.fo.index_pk_m]*(self.ba.Omega0_m/0.3)**0.5
             # spartacous
