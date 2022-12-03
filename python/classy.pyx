@@ -2806,6 +2806,8 @@ cdef class Class:
                 value = self.ba.N_IR
             elif name == 'N_UV':
                 value = self.ba.N_UV
+            elif name == 'N_step':
+                value = self.ba.N_step
             elif name == 'Gamma_pac':
                 value = self.ba.Gamma_pacdr
             elif name == 'alpha_pac':
