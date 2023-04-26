@@ -590,10 +590,6 @@ int background_functions(
     rho_m += pvecback[pba->index_bg_rho_pacdm];
   }
   /* PAcDR */
-  /* TODO: revisit
-    1. check and improve everything
-    2. x_fo is currently computed in input.c with a crude estimate
-  */
 
   if (pba->has_pacdr == _TRUE_) {
 
@@ -683,8 +679,6 @@ int background_functions(
 
     // the same, at the time of freeze-out
     rate_xfn_fo = 0.5*exp(-x_fo)*(2. + x_fo*(2.+x_fo));
-
-    //TODO: re-do this for all cases, when particle phys. or not, and for x>x_fo or not.
 
     // Patching n(a) and Gamma(a) accross freeze-out
     if (x <= x_fo) {

@@ -6310,7 +6310,7 @@ int perturbations_initial_conditions(struct precision * ppr,
 
         delta_ur = ppw->pv->y[ppw->pv->index_pt_delta_g]; /* density of ultra-relativistic neutrinos/relics */
 
-        //TODO: are the formulas below correct? Because I'm getting something different.
+        //NOtE: are the formulas below correct? Because I'm getting something different in the curved Universe case.
 
         /* velocity of ultra-relativistic neutrinos/relics */ //TBC
         theta_ur = - k*ktau_three/36./(4.*fracnu+15.)
@@ -6667,7 +6667,7 @@ int perturbations_initial_conditions(struct precision * ppr,
     }
 
     if (pba->has_idr == _TRUE_){
-      if (ppw->approx[ppw->index_ap_rsa_idr]==(int)rsa_idr_off) { // TODO: check if needed?
+      if (ppw->approx[ppw->index_ap_rsa_idr]==(int)rsa_idr_off) { // probably not needed?
         ppw->pv->y[ppw->pv->index_pt_delta_idr] = delta_ur;
         ppw->pv->y[ppw->pv->index_pt_theta_idr] = theta_ur;
         if (ppt->idr_nature == idr_free_streaming){
@@ -7509,7 +7509,7 @@ int perturbations_einstein(
         class_call(perturbations_rsa_idr_delta_and_theta(ppr,pba,pth,ppt,k,y,a_prime_over_a,ppw->pvecthermo,ppw,ppt->error_message),
                    ppt->error_message,
                    ppt->error_message);
-        //MANUEL: TODO: why not add rsa_theta_idr to rho_plus_p_theta like in sync gauge?
+        //TODO: why not add rsa_theta_idr to rho_plus_p_theta like in sync gauge?
         // ppw->rho_plus_p_theta += 4./3.*ppw->pvecback[pba->index_bg_rho_idr]*ppw->rsa_theta_idr;????
       }
       //spartacous_approx
@@ -10727,31 +10727,6 @@ int perturbations_derivs(double tau,
     }
 
     //spartacous: finally, defining the perturbations evolutions equations
-    //TODO: check & improve everything. Include dm-dr Thomson scattering?
-    /** - ---> pacdm */
-
-    // if (pba->has_pacdm == _TRUE_) {
-    //
-    //   dy[pv->index_pt_delta_pacdm] = -(y[pv->index_pt_theta_pacdm]+metric_continuity); /* pacdm density */
-    //
-    //   dy[pv->index_pt_theta_pacdm] = - a_prime_over_a*y[pv->index_pt_theta_pacdm] + metric_euler; /* pacdm velocity */
-    //
-    //   // add interactions
-    //   if (pba->has_pacdr == _TRUE_)
-    //     dy[pv->index_pt_theta_pacdm] += a*pvecback[pba->index_bg_Gamma_pacdr]*(y[pv->index_pt_theta_pacdr] - y[pv->index_pt_theta_pacdm]);
-    // }
-    //
-    // /** - ---> pacdr */
-    // if (pba->has_pacdr == _TRUE_) {
-    //
-    //   dy[pv->index_pt_delta_pacdr] = -(1.+pvecback[pba->index_bg_w_pacdr])*(y[pv->index_pt_theta_pacdr]+metric_continuity) - 3.*a_prime_over_a*(pvecback[pba->index_bg_cs2_pacdr] - pvecback[pba->index_bg_w_pacdr])*y[pv->index_pt_delta_pacdr]; /* pacdr density */
-    //
-    //   dy[pv->index_pt_theta_pacdr] = - a_prime_over_a*(1.-3.*pvecback[pba->index_bg_w_pacdr])*y[pv->index_pt_theta_pacdr] -(a_prime_over_a*a*pvecback[pba->index_bg_dw_pacdr])/(1.+pvecback[pba->index_bg_w_pacdr])*y[pv->index_pt_theta_pacdr] + (pvecback[pba->index_bg_cs2_pacdr])/(1.+pvecback[pba->index_bg_w_pacdr])*k2*y[pv->index_pt_delta_pacdr] + metric_euler; /* pacdr velocity */
-    //
-    //   // add interactions
-    //   if (pba->has_pacdm == _TRUE_)
-    //     dy[pv->index_pt_theta_pacdr] += a*pvecback[pba->index_bg_Gamma_pacdr]*(pvecback[pba->index_bg_rho_pacdm]/pvecback[pba->index_bg_rho_pacdr])/(1.+pvecback[pba->index_bg_w_pacdr])*(y[pv->index_pt_theta_pacdm] - y[pv->index_pt_theta_pacdr]);
-    // }
     //spartacous_approx
     if (pba->has_pacdm == _TRUE_) {
 
@@ -11713,7 +11688,6 @@ int perturbations_rsa_idr_delta_and_theta(
 
 /**
  * Compute the PAcDM-PAcDR slip (theta_pacdr - theta_pacdm)' in the dark tight-coupling approximation
- * TODO: revisit this routine; check all formulas
  *
  * @param y                        Input: vector of perturbations
  * @param parameters_and_workspace Input/Output: in input, fixed parameters (e.g. indices); in output, slip and shear
@@ -11856,7 +11830,6 @@ int perturbations_dtca_slip(double * y,
 /**
  * Compute the density delta and velocity theta of dark PAcDR
  * radiation in its streaming approximation
- * TODO: revisit this routine, check all formulas, generalize to exact equations when w and cs2 are not 1/3
  *
  * @param ppr                      Input: pointer to precision structure
  * @param pba                      Input: pointer to background structure

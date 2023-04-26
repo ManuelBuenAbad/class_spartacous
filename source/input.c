@@ -3452,7 +3452,6 @@ int input_read_parameters_species(struct file_content * pfc,
   //Done with transition
 
   /* 7.2.5.c) PAc Interactions */
-  //TODO: check everything. Pay attention to all factors of 2 & _PI_ and rescalings due to g_IR d.o.f.
   class_call(parser_read_double(pfc,"alpha_pac",&param1,&flag1,errmsg),
              errmsg,
              errmsg);
@@ -3608,7 +3607,6 @@ int input_read_parameters_species(struct file_content * pfc,
   }
   //spartacous_approx
 
-  // TODO: REVISIT THIS, make more precise!
   // a very crude estimate of the ratio xfo === m_pacdr/T_pacdr at the time of freeze-out, ignoring differences in visible and dark temperatures, and taking T_pacdr ~ m_pacdr everywhere except the Boltzmann suppression
 
   // Gamma_ann ~ m_pacdr alpha_pac^2 exp(-xfo) ~ H(T~m_pacdr) ~ (T^2 + T_eq^0.5 T^1.5)/m_Pl
@@ -3623,10 +3621,9 @@ int input_read_parameters_species(struct file_content * pfc,
   // verbosity
   if ((input_verbose > 1) && ((pba->Omega0_pacdm != 0.) || (pba->Omega0_pacdr != 0.))) {
     printf("****************************************************************************\n");
-    printf("\tThe SPartAcous Model (beta version)\n");
+    printf("\tThe SPartAcous Model\n");
     printf("****************************************************************************\n");
     printf("\tA code for Stepped Partially Acoustic Dark Matter.\n");
-    printf("\tBETA VERSION. TODO:\n\t1. Check & Improve: input.c, background.c, & perturbations.c\n\t2. Write Jupyter notebooks!\n");
     printf("----------------------------------------------------------------------------\n");
     if (ppt->use_DTCA == _TRUE_)
       printf("\tDark tight coupling approximation (DTCA): ON.\n");

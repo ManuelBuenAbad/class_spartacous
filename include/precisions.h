@@ -391,7 +391,7 @@ class_precision_parameter(idr_streaming_trigger_tau_c_over_tau,double,10.0) /**<
   * on PAcDR free-streaming approximation (keep density and theta):
   * first condition: \f$ k \tau \f$ > dark_radiation_streaming_trigger_tau_over_tau_k
   */
- class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_k,double,44.0)//TODO: tau or z?
+ class_precision_parameter(dark_radiation_streaming_trigger_tau_over_tau_k,double,44.0)
  /* second condition: z/z_eq < dark_radiation_streaming_trigger_z_over_zeq */
  // class_precision_parameter(dark_radiation_streaming_trigger_z_over_zeq,double,0.05)
  /* second condition: tau/tau_eq > dark_radiation_streaming_trigger_tau_over_tau_eq */
