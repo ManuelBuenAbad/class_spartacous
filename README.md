@@ -14,6 +14,34 @@ SPartAcous
 
 This version of CLASS has been modified by Manuel A. Buen-Abad and Taewook Youn (April 2022), in order to include the SPartAcous model (partially acoustic dark matter with a step).
 
+If you use `class_spartacous` in any published work, please cite the appropriate CLASS papers, as well as the SPartAcous papers [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2022)](https://arxiv.org/abs/2208.05984) and [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2023)](https://arxiv.org/abs/23xx.yyyyy).
+
+The BibTeX entries for our two SPartAcous papers are:
+
+    @article{Buen-Abad:2022kgf,
+        author = "Buen-Abad, Manuel A. and Chacko, Zackaria and Kilic, Can and Marques-Tavares, Gustavo and Youn, Taewook",
+        title = "{Stepped Partially Acoustic Dark Matter, Large Scale Structure, and the Hubble Tension}",
+        eprint = "2208.05984",
+        archivePrefix = "arXiv",
+        primaryClass = "hep-ph",
+        reportNumber = "UTTG-10-2022",
+        month = "8",
+        year = "2022"
+    }
+
+
+    @article{Buen-Abad:2023???,
+        author = "Buen-Abad, Manuel A. and Chacko, Zackaria and Kilic, Can and Marques-Tavares, Gustavo and Youn, Taewook",
+        title = "{SPartAcous II}",
+        eprint = "23xx.yyyyy",
+        archivePrefix = "arXiv",
+        primaryClass = "hep-ph",
+        reportNumber = "????-??-2023",
+        month = "?",
+        year = "2023"
+    }
+
+
 Compiling CLASS and getting started
 -----------------------------------
 
