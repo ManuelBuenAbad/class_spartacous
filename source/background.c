@@ -776,6 +776,7 @@ int background_functions(
     pvecback[pba->index_bg_cs2_pacdr] = cs2_pacdr;
     pvecback[pba->index_bg_Gamma_pacdr] = Gamma;
 
+    /* now defining the log-derivatives of these quantities w.r.t. ln(a) (i.e. dX === dlnX/dlna, ddX === d^2 lnX/dlna^2) */
     pvecback[pba->index_bg_dx_pacdr] = dxdlna; // dx/dlna
     pvecback[pba->index_bg_ddx_pacdr] = d2xdlna2; // d/dlna (dx/dlna)
     pvecback[pba->index_bg_dw_pacdr] = dw*dxdlna; // dln(1+w)/dlna

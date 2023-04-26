@@ -11751,7 +11751,7 @@ int perturbations_dtca_slip(double * y,
   a_primeprime_over_a = pvecback[pba->index_bg_H_prime] * a + 2. * a_prime_over_a * a_prime_over_a;
   s2_squared = 1.-3.*pba->K/k2;
 
-  /** - (a) compute PAcDM- and PAcDR-related quantities and their derivatives */
+  /** - (a) compute PAcDM- and PAcDR-related quantities and their log-derivatives w.r.t. ln(a) (i.e. dX === dlnX/dlna, ddX === d^2 lnX/dlna^2) */
   w = pvecback[pba->index_bg_w_pacdr];
   cs2 = pvecback[pba->index_bg_cs2_pacdr];
   R = (1. + w) * pvecback[pba->index_bg_rho_pacdr]/pvecback[pba->index_bg_rho_pacdm];
@@ -11762,10 +11762,13 @@ int perturbations_dtca_slip(double * y,
   dR = -(3.*w - dw);
   dtau_c = -(pvecback[pba->index_bg_dGamma_pacdr] + 1.);
 
+  /* now defining the combination "varpi" */
   // varpi = (1.-3.*w) + dw;// turns out this is the same as the expression below, which is simpler and more intuitive
   varpi = 1.-3.*cs2;
+
+  /* now the derivative of varpi w.r.t. ln(a). NOTE: this is NOT dln(varpi)/dlna, but only dvarpi/dlna. */
   // dvarpi = -3.*(1.+w)*dw + ddw;// turns out this is the same as the expression below, which is simpler and more intuitive
-  dvarpi = -3.*dcs2;
+  dvarpi = -3.*cs2*dcs2;// note the factor of cs2, because d/dlna (varpi) = -3 d/dlna (cs2), but we have defined dcs2 === dlncs2/dlna = 1/cs2 * d/dlna (cs2).
 
   /** - --> (b) define short-cut notations for the scalar perturbations */
   if (ppw->approx[ppw->index_ap_drsa] == (int)drsa_off) {
