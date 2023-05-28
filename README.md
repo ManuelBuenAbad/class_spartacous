@@ -16,12 +16,12 @@ This version of CLASS has been modified by Manuel A. Buen-Abad and Taewook Youn 
 
 In addition to the usual CLASS code, we have included two important sets of files.
 
-    1. The `Mathematica` notebook `./notebooks/spartacous_initial_conditions.nb` describes the superhorizon initial conditions of the adiabatic perturbations of the various components of the SPartAcous model. These are different from the standard case due to the presence of the mass threshold in the dark radiation.
-    
-    2. The folder `./mp-mod_files/` contains:
-        a. example `.param` files in the `input/` folder,
-        b. the H_0 and S_8 likelihoods in the `likelihoods/` folder, and
-        c. our modified version of the `data.py` (in which we include our own version of the SPartAcous parameters whenever we want to scan with a flat log10 prior) in `mp-mod_data.py`.
+1. The `Mathematica` notebook `./notebooks/spartacous_initial_conditions.nb` describes the superhorizon initial conditions of the adiabatic perturbations of the various components of the SPartAcous model. These are different from the standard case due to the presence of the mass threshold in the dark radiation.
+
+2. The folder `./mp-mod_files/` contains:
+  a. example `.param` files in the `input/` folder,
+  b. the H_0 and S_8 likelihoods in the `likelihoods/` folder, and
+  c. our modified version of the `data.py` (in which we include our own version of the SPartAcous parameters whenever we want to scan with a flat log10 prior) in `mp-mod_data.py`.
 
 If you use `class_spartacous` in any published work, please cite the appropriate CLASS papers, as well as the SPartAcous papers [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2022)](https://arxiv.org/abs/2208.05984) and [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2023)](https://arxiv.org/abs/23xx.yyyyy).
 
