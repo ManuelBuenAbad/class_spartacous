@@ -1,0 +1,4 @@
+# Values for KiDs-1000x from https://arxiv.org/abs/2007.15632
+KiDS.s8      = 0.766
+KiDS.sigma1  = 0.020
+KiDS.sigma2  = 0.014

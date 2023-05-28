@@ -1,0 +1,3 @@
+# Values for combination of KiDS-1000x and DES-Y3
+S8.s8      = 0.769
+S8.sigma  = 0.016

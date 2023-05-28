@@ -1,0 +1,4 @@
+# Values for DES-Y3 from https://arxiv.org/abs/2105.13549
+DES.s8      = 0.775
+DES.sigma1  = 0.026
+DES.sigma2  = 0.024

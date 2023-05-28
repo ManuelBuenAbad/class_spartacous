@@ -1,0 +1,9 @@
+# Prior on absolute magnitude of Pantheon supernovae
+# from D. Camarena & V. Marra (arXiv:2101.08641)
+# Mb from https://arxiv.org/abs/2112.04510
+
+SH0ES_M.MB = -19.253
+SH0ES_M.sigma = 0.027
+
+SH0ES_M.conflicting_experiments = ['JLA_simple', 'JLA']
+SH0ES_M.use_nuisance = ['M']
