@@ -29,24 +29,26 @@ The BibTeX entries for our two SPartAcous papers are:
 
     @article{Buen-Abad:2022kgf,
         author = "Buen-Abad, Manuel A. and Chacko, Zackaria and Kilic, Can and Marques-Tavares, Gustavo and Youn, Taewook",
-        title = "{Stepped Partially Acoustic Dark Matter, Large Scale Structure, and the Hubble Tension}",
+        title = "{Stepped partially acoustic dark matter, large scale structure, and the Hubble tension}",
         eprint = "2208.05984",
         archivePrefix = "arXiv",
         primaryClass = "hep-ph",
         reportNumber = "UTTG-10-2022",
-        month = "8",
-        year = "2022"
+        doi = "10.1007/JHEP06(2023)012",
+        journal = "JHEP",
+        volume = "06",
+        pages = "012",
+        year = "2023"
     }
 
-
-    @article{Buen-Abad:2023???,
+    @article{Buen-Abad:2023uva,
         author = "Buen-Abad, Manuel A. and Chacko, Zackaria and Kilic, Can and Marques-Tavares, Gustavo and Youn, Taewook",
-        title = "{SPartAcous II}",
-        eprint = "23xx.yyyyy",
+        title = "{Stepped Partially Acoustic Dark Matter: Likelihood Analysis and Cosmological Tensions}",
+        eprint = "2306.01844",
         archivePrefix = "arXiv",
-        primaryClass = "hep-ph",
-        reportNumber = "????-??-2023",
-        month = "?",
+        primaryClass = "astro-ph.CO",
+        reportNumber = "UTWI-19-2023",
+        month = "6",
         year = "2023"
     }
 
