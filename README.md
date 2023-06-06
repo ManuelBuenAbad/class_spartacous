@@ -23,7 +23,7 @@ In addition to the usual CLASS code, we have included two important sets of file
     * the H_0 and S_8 likelihoods in the `likelihoods/` folder, and
     * our modified version of the `data.py` (in which we include our own version of the SPartAcous parameters whenever we want to scan with a flat log10 prior) in `mp-mod_data.py`.
 
-If you use `class_spartacous` in any published work, please cite the appropriate CLASS papers, as well as the SPartAcous papers [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2022)](https://arxiv.org/abs/2208.05984) and [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2023)](https://arxiv.org/abs/23xx.yyyyy).
+If you use `class_spartacous` in any published work, please cite the appropriate CLASS papers, as well as the SPartAcous papers [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2022)](https://arxiv.org/abs/2208.05984) and [Buen-Abad, Chacko, Kilic, Marques-Tavares, Youn (2023)](https://arxiv.org/abs/2306.01844).
 
 The BibTeX entries for our two SPartAcous papers are:
 
